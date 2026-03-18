@@ -8,7 +8,7 @@ This is a rules engine and multi-agent AI system for *The Campaign for North Afr
 
 The goal of this project is to build the game as a functioning digital system, then have teams of LLM agents play it — each agent taking one of the five staff roles the rules define — and eventually have them learn through self-play.
 
-**Current status:** The engine has completed a full 111-turn Operation Compass game autonomously — both sides played entirely by Qwen3-8B running locally on an M4 Pro MacBook. The game ran overnight in 493 minutes (~4.4 min/turn) with historically plausible results. The orchestrator uses a two-stage situation engine (signal extraction → classification → playbook execution) with a RAG pipeline backed by ChromaDB, a cross-game doctrine system, and thinking budget scaling per situation complexity. The full 6,565-hex map covers all five map sections (A through E) with real terrain data extracted from the VASSAL module.
+**Current status:** The engine has completed a full 111-turn Operation Compass game autonomously — both sides played entirely by Qwen3-8B running locally on an M4 Pro MacBook (24GB). A complete game takes 6–8 hours and runs unattended overnight. The orchestrator uses a two-stage situation engine (signal extraction → classification → playbook execution) with a RAG pipeline backed by ChromaDB, a cross-game doctrine system, and thinking budget scaling per situation complexity. The full 6,565-hex map covers all five map sections (A through E) with real terrain data extracted from the VASSAL module.
 
 ## Why This Game
 
