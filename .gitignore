@@ -1,0 +1,42 @@
+# Generated/Runtime
+saves/
+logs/
+output/
+exports/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+*.egg-info/
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Copyrighted game materials (not distributable)
+CampaignNorthAfrica*.pdf
+CNA_Charts_LogSheets.pdf
+CNA_Strategies_and_Tactics.pdf
+CNA_Strategies_and_Tactics.docx
+cna strategies.rtf
+
+# VASSAL module and reference sheets (copyrighted)
+VASSAL_CNA/
+files/vassal_module/
+files/CNA-CB-Map-v1.4.pdf
+
+# Steganography / encryption tool (contains copyrighted images)
+CNA_encryption/
+
+# Old development artifacts
+combat and test/
+pythonfiles/
+
+# Large generated files
+*.vlog

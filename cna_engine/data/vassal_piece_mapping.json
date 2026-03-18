@@ -1,0 +1,37 @@
+{
+    "_comment": "Maps CNA engine unit IDs to VASSAL piece image filenames (without .png extension). Verified against CNAv2.1.0.vmod image inventory.",
+
+    "cw_7arm_hq":    "BR 7 - 7",
+    "cw_2rtr":       "BR 2 RTR - none",
+    "cw_7hus":       "BR 7 Hus - 4-7",
+    "cw_3hus":       "BR 3 Hus - none",
+    "cw_1rha":       "BR 1 RHA - none",
+    "cw_11hus":      "BR 11 Hus - 7-Spt7",
+    "cw_4ind_hq":    "IN 4 In - none",
+    "cw_1_6raj":     "IN 1-6RajRf - 11-4 In",
+    "cw_3_1pun":     "IN 3-1 Pjb - 9-4In",
+    "cw_1rhy_art":   "IN 1 Fld - 4 In",
+    "cw_8fd_engr":   "BR A - SpServ",
+    "cw_rasc_trucks": "BR Truck",
+
+    "it_1lib_hq":    "IT 1 Libyan - none",
+    "it_1lib_1bn":   "IT VIII-1L - 1 Libyan",
+    "it_1lib_2bn":   "IT XI-1L - 1 Libyan",
+    "it_1lib_art":   "IT 1 Libyan - 1 Libyan (ART)",
+    "it_2lib_hq":    "IT IILibCD - Bnghzi",
+    "it_2lib_1bn":   "IT II-3L - 2 Libyan",
+    "it_2lib_2bn":   "IT XII-2L - 1 Libyan",
+    "it_maletti_hq": "IT Maletti - none",
+    "it_m11_plt":    "IT V-1LbM - Maletti",
+    "it_maletti_inf":"IT 1Sno-Sno - Maletti",
+    "it_autogrp":    "IT Truck",
+    "it_eng_co":     "IT 203 - none (ENG)",
+
+    "cw_6aus_1bn":   "AU 2-1Aus - 16-6Aus",
+    "cw_6aus_2bn":   "AU 2-3Aus - 16-6 Aus",
+    "dak_recon_bn":  "GE 3 - 5 Le",
+    "dak_5lt_1bn":   "GE 2 - 5 Le",
+    "dak_5lt_2bn":   "GE 5 - 5 Le",
+    "dak_15pz_1bn":  "GE 115 - 15",
+    "dak_15pz_2bn":  "GE 8 - 15"
+}

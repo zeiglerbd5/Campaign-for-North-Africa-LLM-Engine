@@ -1,0 +1,1069 @@
+{
+  "terrain": {
+    "clear": {
+      "terrain_type": "Clear",
+      "motorized_cp": 2,
+      "non_motorized_cp": 1,
+      "track_effect": "Halve",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "rough": {
+      "terrain_type": "Rough",
+      "motorized_cp": 3,
+      "non_motorized_cp": 2,
+      "track_effect": "Halve",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "1L",
+      "close_assault_shift": "1L",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "mountain": {
+      "terrain_type": "Mountain",
+      "motorized_cp": 6,
+      "non_motorized_cp": 3,
+      "track_effect": "Halve",
+      "barrage_shift": "2L",
+      "anti_armor_shift": "2L",
+      "close_assault_shift": "2L",
+      "stacking_limit": "10 SP",
+      "notes": "Vehicles prohibited without road/track"
+    },
+    "sand_sea": {
+      "terrain_type": "Sand Sea",
+      "motorized_cp": 4,
+      "non_motorized_cp": 3,
+      "track_effect": "N/A",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "1L",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": "No tracks in sand sea"
+    },
+    "swamp": {
+      "terrain_type": "Swamp",
+      "motorized_cp": 4,
+      "non_motorized_cp": 3,
+      "track_effect": "N/A",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "2L",
+      "close_assault_shift": "1L",
+      "stacking_limit": "5 SP",
+      "notes": ""
+    },
+    "oasis": {
+      "terrain_type": "Oasis",
+      "motorized_cp": 2,
+      "non_motorized_cp": 1,
+      "track_effect": "Halve",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "1L",
+      "close_assault_shift": "1L",
+      "stacking_limit": "10 SP",
+      "notes": "Water source"
+    },
+    "village": {
+      "terrain_type": "Village",
+      "motorized_cp": 2,
+      "non_motorized_cp": 1,
+      "track_effect": "Halve",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "1L",
+      "close_assault_shift": "1L",
+      "stacking_limit": "10 SP",
+      "notes": ""
+    },
+    "major_city": {
+      "terrain_type": "Major City",
+      "motorized_cp": 1,
+      "non_motorized_cp": 1,
+      "track_effect": "N/A",
+      "barrage_shift": "2L",
+      "anti_armor_shift": "2L",
+      "close_assault_shift": "2L",
+      "stacking_limit": "Unlimited",
+      "notes": "ERRATA: Footnote (4) belongs here, not Swamp"
+    },
+    "bir": {
+      "terrain_type": "Bir",
+      "motorized_cp": 2,
+      "non_motorized_cp": 1,
+      "track_effect": "Halve",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": "Water source (may deplete)"
+    },
+    "road": {
+      "terrain_type": "Road",
+      "motorized_cp": 0.5,
+      "non_motorized_cp": 0.5,
+      "track_effect": "N/A",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "See road rules",
+      "notes": "Per hex along road"
+    },
+    "railroad": {
+      "terrain_type": "Railroad",
+      "motorized_cp": 0,
+      "non_motorized_cp": 0,
+      "track_effect": "N/A",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "See rail rules",
+      "notes": ""
+    },
+    "escarpment": {
+      "terrain_type": "Escarpment",
+      "motorized_cp": 2.0,
+      "non_motorized_cp": 1.0,
+      "track_effect": "2L",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "NJH ADDITION: Barrage R1 shift down escarpment",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "slope": {
+      "terrain_type": "Slope",
+      "motorized_cp": 1.0,
+      "non_motorized_cp": 1.0,
+      "track_effect": "1L",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "ridge": {
+      "terrain_type": "Ridge",
+      "motorized_cp": 2.0,
+      "non_motorized_cp": 1.0,
+      "track_effect": "1L",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "Blocks LOS",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "wadi": {
+      "terrain_type": "Wadi",
+      "motorized_cp": 1.0,
+      "non_motorized_cp": 0.0,
+      "track_effect": "1L",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "river": {
+      "terrain_type": "River",
+      "motorized_cp": 2.0,
+      "non_motorized_cp": 1.0,
+      "track_effect": "1L",
+      "barrage_shift": "1L",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    },
+    "desert": {
+      "terrain_type": "Desert",
+      "motorized_cp": 2,
+      "non_motorized_cp": 1,
+      "track_effect": "Halve",
+      "barrage_shift": "\u2014",
+      "anti_armor_shift": "\u2014",
+      "close_assault_shift": "\u2014",
+      "stacking_limit": "Unlimited",
+      "notes": ""
+    }
+  },
+  "cpa_costs": [
+    {
+      "action": "Movement (per terrain cost)",
+      "cp_cost": "Varies",
+      "notes": "See Terrain Effects sheet"
+    },
+    {
+      "action": "Breaking Contact",
+      "cp_cost": "2",
+      "notes": "NJH CHANGE: Or removed at start of Movement Segment when not in EZOC"
+    },
+    {
+      "action": "Breaking Engaged",
+      "cp_cost": "4",
+      "notes": "NJH CHANGE: Must spend 4 CPA to remove Engaged status"
+    },
+    {
+      "action": "Barrage (firing)",
+      "cp_cost": "2",
+      "notes": ""
+    },
+    {
+      "action": "Undergoing Barrage",
+      "cp_cost": "3",
+      "notes": ""
+    },
+    {
+      "action": "Anti-Armor Fire",
+      "cp_cost": "2",
+      "notes": ""
+    },
+    {
+      "action": "Close Assault (offensive)",
+      "cp_cost": "3",
+      "notes": ""
+    },
+    {
+      "action": "Close Assault (defensive)",
+      "cp_cost": "",
+      "notes": "Involuntary"
+    },
+    {
+      "action": "Detach Unit",
+      "cp_cost": "1",
+      "notes": "NJH: Double for untrained units"
+    },
+    {
+      "action": "Attach Unit",
+      "cp_cost": "1",
+      "notes": "NJH: Double for untrained units"
+    },
+    {
+      "action": "Detach Truck",
+      "cp_cost": "0.5",
+      "notes": ""
+    },
+    {
+      "action": "Attach Truck",
+      "cp_cost": "0.5",
+      "notes": ""
+    },
+    {
+      "action": "Load/Unload Troops",
+      "cp_cost": "1",
+      "notes": ""
+    },
+    {
+      "action": "Load/Unload Supplies",
+      "cp_cost": "1",
+      "notes": ""
+    },
+    {
+      "action": "Draw Water",
+      "cp_cost": "1",
+      "notes": ""
+    },
+    {
+      "action": "Absorb Replacement Points",
+      "cp_cost": "1",
+      "notes": "NJH: Double for untrained units"
+    },
+    {
+      "action": "Construct (per level)",
+      "cp_cost": "2",
+      "notes": ""
+    },
+    {
+      "action": "Training",
+      "cp_cost": "1",
+      "notes": "Per training session"
+    },
+    {
+      "action": "Breakdown Repair (field)",
+      "cp_cost": "1",
+      "notes": ""
+    },
+    {
+      "action": "Reorganize",
+      "cp_cost": "1",
+      "notes": ""
+    },
+    {
+      "action": "Reserve Designation",
+      "cp_cost": "",
+      "notes": ""
+    },
+    {
+      "action": "Reserve Release",
+      "cp_cost": "",
+      "notes": ""
+    },
+    {
+      "action": "Reaction",
+      "cp_cost": "",
+      "notes": "Uses normal movement CPA; cannot react if in EZOC/Engaged"
+    },
+    {
+      "action": "Retreat Before Assault",
+      "cp_cost": "",
+      "notes": "Max 4 CP (or 1 hex) if not adjacent to enemy"
+    }
+  ],
+  "ports": {
+    "tripoli": {
+      "name": "Tripoli",
+      "max_efficiency": "10",
+      "max_tonnage_per_gt": "3400",
+      "sp_capacity": "2",
+      "repair_facility": "Major",
+      "notes": ""
+    },
+    "benghazi": {
+      "name": "Benghazi",
+      "max_efficiency": "10",
+      "max_tonnage_per_gt": "1700",
+      "sp_capacity": "1",
+      "repair_facility": "None",
+      "notes": ""
+    },
+    "tobruk": {
+      "name": "Tobruk",
+      "max_efficiency": "5",
+      "max_tonnage_per_gt": "850",
+      "sp_capacity": "1",
+      "repair_facility": "Temporary",
+      "notes": "NJH CORRECTION: Efficiency = 5 (not 10). Repair is temporary [60.33]."
+    },
+    "bardia": {
+      "name": "Bardia",
+      "max_efficiency": "3",
+      "max_tonnage_per_gt": "510",
+      "sp_capacity": "1",
+      "repair_facility": "None",
+      "notes": ""
+    },
+    "mersa matruh": {
+      "name": "Mersa Matruh",
+      "max_efficiency": "5",
+      "max_tonnage_per_gt": "850",
+      "sp_capacity": "1",
+      "repair_facility": "None",
+      "notes": ""
+    },
+    "alexandria": {
+      "name": "Alexandria",
+      "max_efficiency": "10",
+      "max_tonnage_per_gt": "3400",
+      "sp_capacity": "2",
+      "repair_facility": "Major",
+      "notes": "Both hexes are Major Repair Facilities"
+    },
+    "cairo": {
+      "name": "Cairo",
+      "max_efficiency": "\u221e",
+      "max_tonnage_per_gt": "\u221e",
+      "sp_capacity": "\u221e",
+      "repair_facility": "Major",
+      "notes": "Unlimited supplies. All hexes are airfields [24.78]."
+    },
+    "port said": {
+      "name": "Port Said",
+      "max_efficiency": "5",
+      "max_tonnage_per_gt": "850",
+      "sp_capacity": "1",
+      "repair_facility": "None",
+      "notes": ""
+    },
+    "derna": {
+      "name": "Derna",
+      "max_efficiency": "3",
+      "max_tonnage_per_gt": "510",
+      "sp_capacity": "1",
+      "repair_facility": "None",
+      "notes": ""
+    },
+    "sollum": {
+      "name": "Sollum",
+      "max_efficiency": "1",
+      "max_tonnage_per_gt": "170",
+      "sp_capacity": "1",
+      "repair_facility": "None",
+      "notes": ""
+    },
+    "yellow rows = errata-corrected values": {
+      "name": "Yellow rows = errata-corrected values",
+      "max_efficiency": "",
+      "max_tonnage_per_gt": "",
+      "sp_capacity": "",
+      "repair_facility": "",
+      "notes": ""
+    }
+  },
+  "aircraft": {
+    "gladiator": {
+      "name": "Gladiator",
+      "side": "CW",
+      "njh_type": "F",
+      "maneuver": "28",
+      "tacair": "2",
+      "bombload": "\u2014",
+      "range_hexes": 50,
+      "fuel_consumption": 1,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "ERRATA: Fuel=1 (was omitted)"
+    },
+    "hurricane_i": {
+      "name": "Hurricane I",
+      "side": "CW",
+      "njh_type": "F/AB",
+      "maneuver": "34",
+      "tacair": "4",
+      "bombload": "2",
+      "range_hexes": 60,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: May form Recon Sqn"
+    },
+    "hurricane_iia": {
+      "name": "Hurricane IIA",
+      "side": "CW",
+      "njh_type": "F/AB",
+      "maneuver": "36",
+      "tacair": "4",
+      "bombload": "2",
+      "range_hexes": 60,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: May form Recon Sqn"
+    },
+    "hurricane_iib": {
+      "name": "Hurricane IIB",
+      "side": "CW",
+      "njh_type": "F/AB",
+      "maneuver": "36",
+      "tacair": "6",
+      "bombload": "4",
+      "range_hexes": 55,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: May form Recon Sqn"
+    },
+    "spitfire_vb": {
+      "name": "Spitfire VB",
+      "side": "CW",
+      "njh_type": "F",
+      "maneuver": "40",
+      "tacair": "4",
+      "bombload": "2",
+      "range_hexes": 45,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: May form Recon Sqn"
+    },
+    "blenheim_iv": {
+      "name": "Blenheim IV",
+      "side": "CW",
+      "njh_type": "LB",
+      "maneuver": "18",
+      "tacair": "2",
+      "bombload": "6",
+      "range_hexes": 80,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Add Recon capability"
+    },
+    "baltimore": {
+      "name": "Baltimore",
+      "side": "CW",
+      "njh_type": "AB",
+      "maneuver": "24",
+      "tacair": "4",
+      "bombload": "8",
+      "range_hexes": 70,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Add Recon capability"
+    },
+    "boston": {
+      "name": "Boston",
+      "side": "CW",
+      "njh_type": "AB",
+      "maneuver": "22",
+      "tacair": "4",
+      "bombload": "8",
+      "range_hexes": 65,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "maryland": {
+      "name": "Maryland",
+      "side": "CW",
+      "njh_type": "AB",
+      "maneuver": "20",
+      "tacair": "2",
+      "bombload": "8",
+      "range_hexes": 90,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "wellington": {
+      "name": "Wellington",
+      "side": "CW",
+      "njh_type": "LB",
+      "maneuver": "16",
+      "tacair": "2",
+      "bombload": "12",
+      "range_hexes": 100,
+      "fuel_consumption": 3,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "sm79": {
+      "name": "SM.79",
+      "side": "Axis",
+      "njh_type": "LB",
+      "maneuver": "18",
+      "tacair": "2",
+      "bombload": "6",
+      "range_hexes": 80,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "cr42": {
+      "name": "CR.42",
+      "side": "Axis",
+      "njh_type": "F",
+      "maneuver": "26",
+      "tacair": "2",
+      "bombload": "\u2014",
+      "range_hexes": 50,
+      "fuel_consumption": 1,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "cr32": {
+      "name": "CR.32",
+      "side": "Axis",
+      "njh_type": "F",
+      "maneuver": "24",
+      "tacair": "2",
+      "bombload": "\u2014",
+      "range_hexes": 45,
+      "fuel_consumption": 1,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "bf109e": {
+      "name": "Bf.109E",
+      "side": "Axis",
+      "njh_type": "F",
+      "maneuver": "38",
+      "tacair": "4",
+      "bombload": "2",
+      "range_hexes": 50,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "ERRATA: No \"D\" capability"
+    },
+    "bf109f": {
+      "name": "Bf.109F",
+      "side": "Axis",
+      "njh_type": "F",
+      "maneuver": "42",
+      "tacair": "6",
+      "bombload": "2",
+      "range_hexes": 50,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "ERRATA [40.15]: TacAir=6, not as printed"
+    },
+    "bf110": {
+      "name": "Bf.110",
+      "side": "Axis",
+      "njh_type": "F",
+      "maneuver": "30/32",
+      "tacair": "4",
+      "bombload": "4",
+      "range_hexes": 70,
+      "fuel_consumption": 3,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": "ERRATA: Man=30 day, 32 night ONLY"
+    },
+    "ju87b": {
+      "name": "Ju.87B",
+      "side": "Axis",
+      "njh_type": "AB",
+      "maneuver": "16",
+      "tacair": "4",
+      "bombload": "6",
+      "range_hexes": 50,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": true,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Only Ger dive bomber for Dual missions"
+    },
+    "ju87d": {
+      "name": "Ju.87D",
+      "side": "Axis",
+      "njh_type": "AB",
+      "maneuver": "16",
+      "tacair": "4",
+      "bombload": "8",
+      "range_hexes": 50,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": true,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Only Ger dive bomber for Dual missions"
+    },
+    "ju88a": {
+      "name": "Ju.88A",
+      "side": "Axis",
+      "njh_type": "LB",
+      "maneuver": "22",
+      "tacair": "4",
+      "bombload": "10",
+      "range_hexes": 80,
+      "fuel_consumption": 3,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "ju88d": {
+      "name": "Ju.88D",
+      "side": "Axis",
+      "njh_type": "AB/R",
+      "maneuver": "22",
+      "tacair": "4",
+      "bombload": "10",
+      "range_hexes": 80,
+      "fuel_consumption": 3,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: D model was recon version"
+    },
+    "ju52": {
+      "name": "Ju.52",
+      "side": "Axis",
+      "njh_type": "T",
+      "maneuver": "10",
+      "tacair": "\u2014",
+      "bombload": "\u2014",
+      "range_hexes": 80,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "1 or 15",
+      "errata_notes": ""
+    },
+    "fw200c": {
+      "name": "Fw.200C",
+      "side": "Axis",
+      "njh_type": "LB/T",
+      "maneuver": "18",
+      "tacair": "2",
+      "bombload": "8",
+      "range_hexes": 120,
+      "fuel_consumption": 3,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": true,
+      "transport_capacity": "1 or 5",
+      "errata_notes": "NJH: Must base Italy/Sicily/Crete. Flak Supp vs CW Fleet only."
+    },
+    "ro37bis": {
+      "name": "Ro.37bis",
+      "side": "Axis",
+      "njh_type": "R",
+      "maneuver": "14",
+      "tacair": "\u2014",
+      "bombload": "\u2014",
+      "range_hexes": 60,
+      "fuel_consumption": 1,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Recon ONLY"
+    },
+    "ar196": {
+      "name": "Ar.196",
+      "side": "Axis",
+      "njh_type": "R",
+      "maneuver": "16",
+      "tacair": "\u2014",
+      "bombload": "\u2014",
+      "range_hexes": 55,
+      "fuel_consumption": 1,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Recon ONLY"
+    },
+    "hs126": {
+      "name": "Hs.126",
+      "side": "Axis",
+      "njh_type": "R",
+      "maneuver": "14",
+      "tacair": "\u2014",
+      "bombload": "\u2014",
+      "range_hexes": 55,
+      "fuel_consumption": 1,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "NJH: Recon ONLY"
+    },
+    "ba88": {
+      "name": "Ba.88",
+      "side": "Axis",
+      "njh_type": "AB",
+      "maneuver": "16",
+      "tacair": "2",
+      "bombload": "4",
+      "range_hexes": 60,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "ca311": {
+      "name": "Ca.311",
+      "side": "Axis",
+      "njh_type": "AB",
+      "maneuver": "16",
+      "tacair": "2",
+      "bombload": "4",
+      "range_hexes": 70,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": ""
+    },
+    "z501": {
+      "name": "Z501",
+      "side": "Axis",
+      "njh_type": "R",
+      "maneuver": "10",
+      "tacair": "\u2014",
+      "bombload": "\u2014",
+      "range_hexes": 110,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "ERRATA [4.4b]: Range=110"
+    },
+    "z506": {
+      "name": "Z506",
+      "side": "Axis",
+      "njh_type": "R",
+      "maneuver": "12",
+      "tacair": "\u2014",
+      "bombload": "\u2014",
+      "range_hexes": 110,
+      "fuel_consumption": 2,
+      "maintenance": "\u2014",
+      "d_capable": false,
+      "night_capable": false,
+      "transport_capacity": "\u2014",
+      "errata_notes": "ERRATA [4.4b]: Range=110"
+    }
+  },
+  "initiative_ratings": [
+    {
+      "gt_range": "GT 1\u201342 (Sept 1940 \u2013 June 1941)",
+      "gt_start": 1,
+      "gt_end": 42,
+      "allied_rating": 3,
+      "axis_rating": 5
+    },
+    {
+      "gt_range": "GT 43\u201390 (July 1941 \u2013 June 1942)",
+      "gt_start": 43,
+      "gt_end": 90,
+      "allied_rating": 4,
+      "axis_rating": 5
+    },
+    {
+      "gt_range": "GT 91\u2013111 (July 1942 \u2013 Jan 1943)",
+      "gt_start": 91,
+      "gt_end": 111,
+      "allied_rating": 5,
+      "axis_rating": 4
+    }
+  ],
+  "evaporation_rates": [
+    {
+      "period": "Pre-jerrycan",
+      "gt_threshold": 1,
+      "allied_rate": 0.09,
+      "axis_rate": 0.03
+    },
+    {
+      "period": "Post-jerrycan",
+      "gt_threshold": 47,
+      "allied_rate": 0.06,
+      "axis_rate": 0.03
+    }
+  ],
+  "key_dates": [
+    {
+      "game_turn": "GT1",
+      "date": "Sept 1940",
+      "event": "Campaign start. Allied Init=3. Allied Evap=9%. No Strategic Air GT1.",
+      "rule_ref": "[7.2][49.3]"
+    },
+    {
+      "game_turn": "GT2",
+      "date": "Sept 1940",
+      "event": "Earliest CW Fleet sortie",
+      "rule_ref": "[60.45]"
+    },
+    {
+      "game_turn": "GT7",
+      "date": "Oct 1940",
+      "event": "Start rolling for Allied and Italian pilots",
+      "rule_ref": "[34.83]"
+    },
+    {
+      "game_turn": "GT12/II",
+      "date": "Nov 1940",
+      "event": "Matruh \u2192 Selby Force (see org sheet)",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT15",
+      "date": "Jan 1941",
+      "event": "Welcome to 1941",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT19",
+      "date": "Feb 1941",
+      "event": "Allied armor org: II",
+      "rule_ref": "[19.25]"
+    },
+    {
+      "game_turn": "GT20",
+      "date": "Feb 1941",
+      "event": "Rommel arrives",
+      "rule_ref": "[31.0]"
+    },
+    {
+      "game_turn": "GT21/III",
+      "date": "Feb 1941",
+      "event": "Disband Selby Force",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT23",
+      "date": "Mar 1941",
+      "event": "Start rolling for German pilots",
+      "rule_ref": "[34.83]"
+    },
+    {
+      "game_turn": "GT29",
+      "date": "Apr 1941",
+      "event": "Pilot Marseilles arrives",
+      "rule_ref": "[34.83]"
+    },
+    {
+      "game_turn": "GT31",
+      "date": "Apr 1941",
+      "event": "German Tanks now BAR 0",
+      "rule_ref": "[4.49]"
+    },
+    {
+      "game_turn": "GT32",
+      "date": "May 1941",
+      "event": "Greece shipping lanes open. Tiger Convoy arrives Alexandria.",
+      "rule_ref": "[56.14][4.43a]"
+    },
+    {
+      "game_turn": "GT35",
+      "date": "May 1941",
+      "event": "Theatre support shifts: 50% Crete, 25% Crete/Italy/Sicily. Bizerta attempts begin.",
+      "rule_ref": "[43.1][55.17]"
+    },
+    {
+      "game_turn": "GT39",
+      "date": "Jun 1941",
+      "event": "Recce upgrade. 10th Light Flotilla Raid possible. NJH: Malta invasion possible.",
+      "rule_ref": "[20.5][30.4]"
+    },
+    {
+      "game_turn": "GT43",
+      "date": "Jul 1941",
+      "event": "Allied Init=4",
+      "rule_ref": "[7.2]"
+    },
+    {
+      "game_turn": "GT47",
+      "date": "Aug 1941",
+      "event": "Allied Evap=6% (jerrycans adopted)",
+      "rule_ref": "[49.3]"
+    },
+    {
+      "game_turn": "GT58",
+      "date": "Nov 1941",
+      "event": "21Div HQ replaces 5th Light",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT63",
+      "date": "Jan 1942",
+      "event": "Welcome to 1942. 7.5cm/75/27 AT rating 0\u21922.",
+      "rule_ref": "[4.49]"
+    },
+    {
+      "game_turn": "GT68",
+      "date": "Feb 1942",
+      "event": "Armor attachments (Turn Track)",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT71",
+      "date": "Mar 1942",
+      "event": "Allied armor org: III",
+      "rule_ref": "[19.25]"
+    },
+    {
+      "game_turn": "GT75",
+      "date": "Apr 1942",
+      "event": "Allied Infantry Bn AT augmentation. Axis ad hoc AT batteries.",
+      "rule_ref": "[19.9][19.8]"
+    },
+    {
+      "game_turn": "GT87",
+      "date": "Jul 1942",
+      "event": "Allied Infantry Bn upgrade",
+      "rule_ref": "[20.77]"
+    },
+    {
+      "game_turn": "GT89",
+      "date": "Jul 1942",
+      "event": "Start of Stalingrad Offensive",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT91",
+      "date": "Aug 1942",
+      "event": "Allied Init=5",
+      "rule_ref": "[7.2]"
+    },
+    {
+      "game_turn": "GT92",
+      "date": "Aug 1942",
+      "event": "Allied armor org: IV",
+      "rule_ref": "[19.25]"
+    },
+    {
+      "game_turn": "GT99",
+      "date": "Oct 1942",
+      "event": "Stop rolling for pilots",
+      "rule_ref": "[34.83]"
+    },
+    {
+      "game_turn": "GT104",
+      "date": "Nov 1942",
+      "event": "Operation Torch (USA Morocco/Algeria landings)",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT105",
+      "date": "Nov 1942",
+      "event": "Operation Uranus (Stalingrad encirclement)",
+      "rule_ref": ""
+    },
+    {
+      "game_turn": "GT111",
+      "date": "Jan 1943",
+      "event": "Welcome to 1943. Axis are screwed.",
+      "rule_ref": ""
+    }
+  ],
+  "barrage_crt": {},
+  "anti_armor_crt": {},
+  "close_assault_crt": {},
+  "flak_crt": {},
+  "air_bombardment_table": {},
+  "strafing_table": {},
+  "morale_table": {},
+  "fuel_consumption_chart": {},
+  "ammo_consumption": {
+    "barrage": 4,
+    "anti_armor": 3,
+    "close_assault": 2,
+    "anti_air": 2,
+    "rearm_tacair": 1,
+    "rearm_bombs": 1
+  }
+}

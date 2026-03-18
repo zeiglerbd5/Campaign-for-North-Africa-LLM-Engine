@@ -1,0 +1,212 @@
+{
+  "Tunis": {
+    "hex_id": "A0505",
+    "vp": 5,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Tunisian capital"
+  },
+  "Bizerte": {
+    "hex_id": "A0304",
+    "vp": 3,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Naval base"
+  },
+  "Sousse": {
+    "hex_id": "A0705",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Tunisian port"
+  },
+  "Sfax": {
+    "hex_id": "A0807",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Tunisian port"
+  },
+  "Gabes": {
+    "hex_id": "A0907",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Southern Tunisia"
+  },
+  "Tripoli": {
+    "hex_id": "A3511",
+    "vp": 5,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Libyan capital"
+  },
+  "Homs": {
+    "hex_id": "A3313",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Tripolitanian port"
+  },
+  "Misurata": {
+    "hex_id": "A3117",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Tripolitanian port"
+  },
+  "Sirte": {
+    "hex_id": "A2438",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Gulf of Sidra"
+  },
+  "Buerat": {
+    "hex_id": "A2836",
+    "vp": 1,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Coastal town"
+  },
+  "Nofilia": {
+    "hex_id": "A1839",
+    "vp": 1,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Coastal waypoint"
+  },
+  "El Agheila": {
+    "hex_id": "A1437",
+    "vp": 3,
+    "is_port": false,
+    "is_airfield": true,
+    "description": "Cyrenaica-Tripolitania border"
+  },
+  "Agedabia": {
+    "hex_id": "B0406",
+    "vp": 2,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Western Cyrenaica"
+  },
+  "Benghazi": {
+    "hex_id": "B1403",
+    "vp": 5,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Cyrenaican capital"
+  },
+  "Barce": {
+    "hex_id": "B1802",
+    "vp": 1,
+    "is_port": false,
+    "is_airfield": true,
+    "description": "Jebel Akhdar"
+  },
+  "Derna": {
+    "hex_id": "B2703",
+    "vp": 3,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Eastern Cyrenaica"
+  },
+  "Tmimi": {
+    "hex_id": "B3004",
+    "vp": 1,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Between Derna and Gazala"
+  },
+  "Gazala": {
+    "hex_id": "B3405",
+    "vp": 2,
+    "is_port": false,
+    "is_airfield": true,
+    "description": "Gazala Line anchor"
+  },
+  "Tobruk": {
+    "hex_id": "C0512",
+    "vp": 5,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Fortress port"
+  },
+  "Bardia": {
+    "hex_id": "C1215",
+    "vp": 3,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Border fortress"
+  },
+  "Sollum": {
+    "hex_id": "C1714",
+    "vp": 2,
+    "is_port": true,
+    "is_airfield": false,
+    "description": "Egypt-Libya border"
+  },
+  "Halfaya Pass": {
+    "hex_id": "C1715",
+    "vp": 2,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Escarpment pass"
+  },
+  "Bir Hacheim": {
+    "hex_id": "C0530",
+    "vp": 2,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Desert strongpoint"
+  },
+  "Sidi Barrani": {
+    "hex_id": "D0821",
+    "vp": 3,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Western Egypt"
+  },
+  "Mersa Matruh": {
+    "hex_id": "D1822",
+    "vp": 3,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Egyptian port/airfield"
+  },
+  "Fuka": {
+    "hex_id": "D2424",
+    "vp": 1,
+    "is_port": false,
+    "is_airfield": true,
+    "description": "Egyptian airfield"
+  },
+  "El Daba": {
+    "hex_id": "D2825",
+    "vp": 1,
+    "is_port": false,
+    "is_airfield": false,
+    "description": "Coastal waypoint"
+  },
+  "El Alamein": {
+    "hex_id": "D3326",
+    "vp": 3,
+    "is_port": false,
+    "is_airfield": true,
+    "description": "Defensive bottleneck"
+  },
+  "Alexandria": {
+    "hex_id": "E1326",
+    "vp": 5,
+    "is_port": true,
+    "is_airfield": true,
+    "description": "Major Allied base"
+  },
+  "Cairo": {
+    "hex_id": "E3530",
+    "vp": 3,
+    "is_port": false,
+    "is_airfield": true,
+    "description": "Egyptian capital"
+  }
+}

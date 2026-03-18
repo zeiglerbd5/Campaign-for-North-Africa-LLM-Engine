@@ -1,0 +1,167 @@
+CNA MAP/HEX DATA RESEARCH FINDINGS
+====================================
+Date: 2026-03-09
+
+=========================================================================
+APPROACH 1: VASSAL MODULE (SUCCESS)
+=========================================================================
+
+Downloaded: files/vassal_module/CNAv2.1.0.vmod (95 MB, v2.1.0)
+Source: https://obj.vassalengine.org/gls/9/4/CNAv2.1.0.vmod
+Version history:
+  - v2.1.0 (2025-08-24) by njharman - requires Vassal >= 3.7.15
+  - v1.0.0 (2021-12-23) by ScottishHordes - requires Vassal >= 3.6.0
+  - v0.94.0 (2021-03-23) by vfttpete - requires Vassal >= 3.2.17
+
+Key files extracted:
+  - files/vassal_module/extracted/buildFile.xml (2.0 MB) - Full module definition
+  - files/vassal_module/extracted/moduledata - Module metadata
+  - files/vassal_module/extracted/images/CNA Map Vassal Mitch Guthrie 2021.png (19 MB, 14310x4632 pixels)
+
+Archive contains 2,279 files total (mostly unit counter SVGs/PNGs).
+
+HEX GRID PARAMETERS FROM VASSAL buildFile.xml:
+-----------------------------------------------
+The map uses a ZonedGrid with 6 hex zones (Malta + Maps A-E) plus holding boxes.
+All hex zones share the same hex geometry:
+  - dx="72.95" (horizontal spacing between hex centers, in pixels)
+  - dy="85.25" (vertical spacing between hex rows, in pixels)
+  - sideways="true" (flat-top hex orientation, rows run horizontally)
+  - Map image: 14310 x 4632 pixels
+
+Zone definitions with pixel-boundary polygons and grid numbering offsets:
+
+  Malta:   HexGrid x0=-15  y0=4    hOff=6   vOff=-1   stagger=false
+  Map A:   HexGrid x0=55   y0=48   hOff=6   vOff=0    stagger=true
+  Map B:   HexGrid x0=-16  y0=7    hOff=2   vOff=-33  stagger=false
+  Map C:   HexGrid x0=-16  y0=10   hOff=12  vOff=-66  stagger=false
+  Map D:   HexGrid x0=-16  y0=16   hOff=21  vOff=-99  stagger=false
+  Map E:   HexGrid x0=-17  y0=-66  hOff=19  vOff=-133 stagger=false
+
+Grid numbering:
+  - first="H" (horizontal first)
+  - hType="N" / vType="N" (numeric)
+  - vDescend=true (rows count from top to bottom)
+  - hDescend=false (columns count left to right)
+  - sep="" (no separator between row/col in hex names)
+
+Holding Boxes: Sicily, Italy, Benghazi, Derna, Crete, Bardia, Tobruk,
+  Alexandria (hex 3613), Alexandria (hex 3714)
+Off-map boxes: Tunis, Gabes, Tripoli, Tripolitania, plus rail-link boxes
+
+=========================================================================
+APPROACH 2: TCFNA SOURCE CODE (SUCCESS)
+=========================================================================
+
+Saved to: files/tcfna_reference/
+  - hex.go     - HEX struct, HEXSIDE struct, sort interface
+  - map.go     - MAP struct, Board_t, Hex_t, Terrain_t enum, Habitation_t, Elevation_t
+  - csvdb.go   - CSV parser for Michael Miller's CNA-Hex-Database-20150117.csv
+  - terrain.go - Terrain tile name mappings for Worldographer
+  - direction.go - Hex direction enum (NE, E, SE, SW, W, NW)
+  - wxx.go     - Summary of Worldographer export code
+
+CRITICAL DIMENSIONS FROM TCFNA CODE:
+-------------------------------------
+  MAX_COLUMNS = 166  (total columns across all 5 boards)
+  MAX_ROWS    = 63   (total rows)
+
+  Board A: columns 1-33    (section offset: +0)
+  Board B: columns 34-66   (section offset: +33)
+  Board C: columns 67-99   (section offset: +66)
+  Board D: columns 100-132 (section offset: +99)
+  Board E: columns 133-166 (section offset: +132)
+
+  Each board section has up to 33 columns and ~47 rows of playable hexes.
+  The full board is 166 columns x 63 rows.
+
+HEX ID FORMAT (from CSV):
+  BRRCC where:
+    B  = board number (1=A, 2=B, 3=C, 4=D, 5=E)
+    RR = row (01-47ish, zero-padded)
+    CC = column (01-33ish per section, zero-padded)
+
+  Converted to global ID: "%02d%03d" % (row, global_column)
+  Label format: "A0101", "B0101", "C3102", etc.
+
+10 TERRAIN TYPES:
+  0=Clear, 1=Delta, 2=Desert, 3=Heavy Vegetation, 4=Mountain,
+  5=Rock/Gravel, 6=Rough, 7=Salt Marsh, 8=Sea, 9=Swamp
+
+3 HABITATION TYPES:
+  0=None, 1=Oasis, 2=Village/Bir, 3=Major City
+
+33 TERRAIN FEATURES (from Terrain struct):
+  Airfield, Border, Clear, Coast, Delta, Desert, Escarpment,
+  Flying Boat Alighting Area, Flying Boat Basin, Heavy Vegetation,
+  Major City, Major River, Minor River, Mountain, Off Map Airfield,
+  Off Map Flying Boat Basin, Oasis, Port, Railroad, Ridge, Road,
+  Rock/Gravel, Rough, Salt Marsh, Sea, Slope, Swamp, Track,
+  Training Area, Unfinished Railroad, Unfinished Road, Village/Bir, Wadi
+
+HEXSIDE DATA (per hex, 6 directions: NE, E, SE, SW, W, NW):
+  Elevation: 1-DnEsc, 2-DnSlp, 3-Ridge, 4-UpEsc, 5-UpSlp
+  Trans (transport): 1-Track, 2-Road, 3-RR (Railroad), 4-UnfRd, 5-UnfRR, 6-Rd&RR
+  Water: 1-Wadi, 2-SeaHS, 3-River, 4-Nile, 5-Border
+
+CSV HEADER COLUMNS (28+1 columns):
+  HexID, Map Hex, Hex Column, Hex Row, Hex RRCCC, Name, Terrain,
+  Habitation, Misc, hsElevation NE/E/SE/SW/W/NW, (blank),
+  hsTrans NE/E/SE/SW/W/NW, hsWater NE/E/SE/SW/W/NW
+
+THE CSV DATABASE FILE:
+  Named: CNA-Hex-Database-20150117.csv
+  Created by: Michael Miller
+  Originally posted at: https://cna-group.proboards.com/thread/55/experimental-play-aids
+  Status: Forum thread returns "board not found" error - the CSV file is NOT
+  currently available for direct download. The tcfna code was designed to
+  parse this file, but the file itself is not in the GitHub repo (the
+  data/, testdata/, and archives/ directories all have only .gitignore files).
+
+=========================================================================
+APPROACH 3: CYBERBOARD MAP (SUCCESS - PDF downloaded)
+=========================================================================
+
+Downloaded: files/CNA-CB-Map-v1.4.pdf (5.8 MB)
+Source: https://www.dropbox.com/s/l31ukh5m1kotm5i/CNA-CB-Map-v1.4.pdf?dl=1
+Created by: Michael Miller (same person who made the CSV hex database)
+Features: Fully vectorized text, searchable by hex and place names,
+  vectorized airfields and other graphics
+
+Other available map files (Dropbox, not downloaded):
+  - CNA-CB-Map-hexnums-20141011.jpg (JPEG with hex numbers)
+  - CNA-CB-Map-20150109.pdf (earlier PDF version)
+  - CNA-CB-Map-20150110.pdf (vectorized PDF, Jan 2015)
+
+=========================================================================
+SUMMARY: WHAT WE HAVE AND WHAT'S MISSING
+=========================================================================
+
+HAVE:
+  [x] Full Vassal module with hex grid geometry parameters
+  [x] Map image at 14310x4632 pixels
+  [x] Complete zone boundary polygons for Maps A-E + Malta + holding boxes
+  [x] Hex grid spacing: dx=72.95px, dy=85.25px, flat-top orientation
+  [x] tcfna Go source code defining all data structures
+  [x] Board dimensions: 166 columns x 63 rows (5 sections of ~33 cols)
+  [x] All terrain type enums (10 hex terrains + 33 features + 5 elevations)
+  [x] CyberBoard vectorized PDF map (searchable hex names)
+  [x] CSV format specification (28 columns, exact header names)
+
+MISSING (high value):
+  [ ] CNA-Hex-Database-20150117.csv - The actual hex-by-hex terrain data.
+      This is the single most valuable file. It contains every hex on the
+      board with terrain type, name, habitation, and all 6 hexside attributes
+      (elevation, transport, water). The tcfna code parses it but the file
+      isn't in the repo. Michael Miller created it but the forum thread is
+      inaccessible. Options to obtain:
+      1. Contact Michael Miller or mdhender (Michael D Henderson, tcfna author)
+      2. Extract from the CyberBoard PDF (manual/OCR)
+      3. Build from the Vassal map image (computer vision)
+      4. Transcribe from the physical game board
+
+NEXT STEPS:
+  - The Vassal buildFile.xml can potentially be parsed to extract hex positions
+    from the 2,369 SetupStack entries (unit initial positions)
+  - The CyberBoard PDF (v1.4) has searchable hex names and could be parsed
+  - Consider contacting mdhender on GitHub for the CSV database
