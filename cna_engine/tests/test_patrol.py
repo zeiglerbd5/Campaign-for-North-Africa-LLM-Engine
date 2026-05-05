@@ -6,14 +6,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from cna_engine.engine.patrol import (
     can_patrol, execute_patrol, execute_patrol_phase,
-    PATROL_RANGE, PATROL_ELIGIBLE_CLASSES, MIN_PATROL_STRENGTH,
+    PATROL_RANGE,
 )
 from cna_engine.engine.movement import get_neighbors
 from cna_engine.models.game_state import (
     GameState, Unit, HexState, TurnState, TOEStrength,
 )
 from cna_engine.models.enums import (
-    Side, UnitStatus, TerrainType, MotorizationType,
+    Side, TerrainType, MotorizationType,
 )
 
 

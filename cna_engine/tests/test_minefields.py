@@ -11,7 +11,7 @@ from cna_engine.engine.minefields import (
 from cna_engine.engine.movement import compute_hex_entry_cost
 from cna_engine.models.game_state import GameState, Unit, HexState, TurnState, TOEStrength, UnitSupply
 from cna_engine.models.enums import (
-    Side, UnitClass, UnitSize, UnitStatus, MotorizationType,
+    Side, UnitClass, UnitSize, MotorizationType,
     TerrainType, RoadType, GamePhase,
 )
 from cna_engine.data.reference_data import ReferenceData

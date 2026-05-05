@@ -9,12 +9,10 @@ are per-side phases in each OpStage.
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
-import random
 
 from cna_engine.models.game_state import (
-    GameState, FleetState, ConvoyState, HexState,
+    GameState, ConvoyState,
 )
-from cna_engine.models.enums import Side
 from cna_engine.engine.combat import roll_d6
 
 

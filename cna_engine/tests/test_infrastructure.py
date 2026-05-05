@@ -6,11 +6,11 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from cna_engine.engine.scenario import load_operation_compass
-from cna_engine.engine.movement import compute_hex_entry_cost, validate_move, _get_hex_state
+from cna_engine.engine.movement import compute_hex_entry_cost, validate_move
 from cna_engine.engine.supply import draw_water_from_terrain
 from cna_engine.models.game_state import GameState, Unit, HexState, TOEStrength, UnitSupply
 from cna_engine.models.enums import (
-    Side, UnitClass, UnitSize, UnitStatus, MotorizationType,
+    Side, UnitClass, UnitSize, MotorizationType,
     TerrainType, RoadType,
 )
 from cna_engine.data.reference_data import ReferenceData

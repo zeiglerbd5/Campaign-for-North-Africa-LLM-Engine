@@ -5,7 +5,7 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from cna_engine.engine.turn_runner import (
-    TurnRunner, PhaseExecutionResult, PausePoint, TurnSummary,
+    TurnRunner, PhaseExecutionResult, PausePoint,
 )
 from cna_engine.engine.scenario import load_operation_compass
 from cna_engine.models.game_state import GameState, TurnState, HexState, Unit, TOEStrength

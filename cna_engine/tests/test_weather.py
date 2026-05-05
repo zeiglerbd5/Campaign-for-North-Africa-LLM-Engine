@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from cna_engine.engine.weather import (
     determine_weather, get_movement_multiplier, get_water_multiplier,
     can_fly_air_missions, get_evaporation_multiplier,
-    WEATHER_TABLE, MOVEMENT_COST_MULTIPLIER,
+    WEATHER_TABLE,
 )
 from cna_engine.models.game_state import GameState, TurnState
 from cna_engine.models.enums import Weather, Season

@@ -4,9 +4,8 @@ Implements the NJH-restructured Sequence of Play.
 Advances the game turn cursor through each phase and sub-phase.
 """
 from __future__ import annotations
-from typing import Optional
 from ..models.enums import (
-    Side, GamePhase, OpStagePhase, CombatSegment, Weather, Season,
+    Side, GamePhase, OpStagePhase, CombatSegment, Season,
     OP_STAGES_PER_TURN, GAME_TURNS_CAMPAIGN, UnitStatus,
 )
 from ..models.game_state import GameState, TurnState

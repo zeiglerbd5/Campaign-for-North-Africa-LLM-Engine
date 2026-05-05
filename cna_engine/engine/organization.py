@@ -7,12 +7,12 @@ The Organization phase occurs at the start of each OpStage before
 combat operations begin. Per [6.0] NJH restructured SoP.
 """
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
-from cna_engine.models.game_state import GameState, Unit, Formation
+from cna_engine.models.game_state import GameState
 from cna_engine.models.enums import (
-    Side, UnitStatus, MotorizationType,
+    Side, UnitStatus,
 )
 from cna_engine.engine.movement import get_neighbors, hex_has_active_enemy
 

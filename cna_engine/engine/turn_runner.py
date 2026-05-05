@@ -10,12 +10,11 @@ for agent input.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Optional, Callable
+from typing import Optional
 
 from cna_engine.models.game_state import GameState
 from cna_engine.models.enums import (
-    Side, GamePhase, OpStagePhase, Weather,
-    UnitClass, UnitStatus,
+    Side, GamePhase, OpStagePhase, UnitClass, UnitStatus,
 )
 from cna_engine.engine.sequence_of_play import (
     SequenceOfPlay, resolve_initiative, get_initiative_ratings,

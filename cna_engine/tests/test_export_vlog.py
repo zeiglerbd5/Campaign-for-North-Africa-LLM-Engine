@@ -3,11 +3,6 @@ Tests for the VASSAL .vlog replay exporter.
 """
 from __future__ import annotations
 
-import json
-import re
-import tempfile
-from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 

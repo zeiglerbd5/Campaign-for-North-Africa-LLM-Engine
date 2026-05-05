@@ -7,9 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from cna_engine.engine.scenario import (
     load_scenario, load_operation_compass, process_reinforcements,
     process_air_reinforcements, get_air_reinforcement_schedule,
-    Reinforcement, AirReinforcement, ScenarioLoadResult,
 )
-from cna_engine.models.game_state import GameState, Unit
 from cna_engine.models.enums import (
     Side, UnitStatus, TerrainType, GamePhase, Weather, Season,
     AircraftStatus,

@@ -10,9 +10,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional, Any
 
-from cna_engine.models.game_state import GameState, Unit, HexState
+from cna_engine.models.game_state import GameState, Unit
 from cna_engine.models.enums import (
-    Side, UnitStatus, GamePhase, OpStagePhase, MotorizationType,
+    Side, UnitStatus,
 )
 from cna_engine.models.serialization import state_summary
 

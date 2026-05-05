@@ -9,7 +9,7 @@ Each system takes combat inputs, applies modifiers, rolls dice,
 looks up the appropriate CRT, and returns structured results.
 """
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 import random
 

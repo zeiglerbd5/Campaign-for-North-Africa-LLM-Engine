@@ -5,8 +5,7 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from cna_engine.engine.organization import (
-    apply_cohesion_changes, check_surrenders, execute_organization_phase,
-    COHESION_DEGRADE_THRESHOLD, COHESION_RECOVERY_AMOUNT,
+    apply_cohesion_changes, check_surrenders,
 )
 from cna_engine.engine.movement import validate_move, get_neighbors
 from cna_engine.models.game_state import GameState, Unit, HexState, TurnState, TOEStrength, UnitSupply

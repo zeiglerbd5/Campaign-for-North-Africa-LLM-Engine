@@ -25,7 +25,7 @@ from logging.handlers import RotatingFileHandler
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from cna_engine.engine.scenario import load_scenario
-from cna_engine.models.serialization import save_state, load_state
+from cna_engine.models.serialization import load_state
 from cna_engine.orchestrator.config import OrchestratorConfig
 from cna_engine.orchestrator.orchestrator import GameOrchestrator
 from cna_engine.orchestrator.llm_backend import OllamaClient, MLXClient

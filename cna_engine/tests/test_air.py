@@ -8,8 +8,7 @@ from cna_engine.engine.air import (
     assign_mission, resolve_air_combat, resolve_flak,
     resolve_bombardment, resolve_strafing, resolve_recon,
     fly_sortie, execute_air_phase,
-    get_aircraft_stats, _load_aircraft_chars, _parse_int_or_zero,
-    AIR_COMBAT_BASE_KILL_CHANCE, MAINTENANCE_CHANCE,
+    get_aircraft_stats, _parse_int_or_zero,
 )
 from cna_engine.models.game_state import (
     GameState, Aircraft, SGSU, HexState, Unit, TOEStrength, Pilot,

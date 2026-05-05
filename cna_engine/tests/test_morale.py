@@ -4,23 +4,20 @@ CNA Engine — Morale / Disorganization Tests
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-import math
 from dataclasses import dataclass
 
 from cna_engine.engine.agent_interface import (
-    _apply_barrage_result, _apply_anti_armor_result,
-    _apply_close_assault_result, _apply_disorganization,
+    _apply_barrage_result, _apply_close_assault_result,
 )
 from cna_engine.engine.organization import (
     apply_cohesion_changes,
-    DISORG_RECOVERY_RESTED, DISORG_RECOVERY_FACILITY,
     DISORG_ATTACK_SHIFT_THRESHOLD, DISORG_DEFEND_SHIFT_THRESHOLD,
 )
 from cna_engine.models.game_state import (
     GameState, Unit, HexState, TurnState, TOEStrength,
 )
 from cna_engine.models.enums import (
-    Side, UnitStatus, TerrainType, MotorizationType,
+    Side, TerrainType, MotorizationType,
 )
 
 

@@ -21,7 +21,6 @@ import json
 import os
 import re
 import sys
-from pathlib import Path
 
 try:
     from openpyxl import Workbook

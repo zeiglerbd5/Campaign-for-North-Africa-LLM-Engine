@@ -7,16 +7,16 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from cna_engine.orchestrator.config import OrchestratorConfig
-from cna_engine.orchestrator.llm_backend import MockLLMClient, LLMResponse
+from cna_engine.orchestrator.llm_backend import LLMResponse
 
 from cna_engine.orchestrator.situations import (
-    StateSignals, SituationLabel, extract_signals,
+    StateSignals, extract_signals,
     deterministic_classify, build_classifier_system_prompt,
     build_classifier_user_prompt, parse_classifier_response,
     SITUATION_TAXONOMY, SITUATION_TO_CATEGORY,
 )
 from cna_engine.orchestrator.playbooks import (
-    Playbook, PlaybookRegistry,
+    PlaybookRegistry,
 )
 from cna_engine.orchestrator.situation_engine import SituationEngine
 from cna_engine.orchestrator.general import DecisionResult
@@ -28,7 +28,7 @@ from cna_engine.models.game_state import (
     FleetState, ConvoyState, Aircraft, SGSU,
 )
 from cna_engine.models.enums import (
-    Side, UnitStatus, GamePhase, OpStagePhase, TerrainType,
+    Side, GamePhase, OpStagePhase, TerrainType,
     MotorizationType, AircraftStatus,
 )
 

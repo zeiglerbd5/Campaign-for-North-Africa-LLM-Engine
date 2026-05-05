@@ -19,10 +19,9 @@ from typing import Optional
 from cna_engine.models.game_state import GameState
 from cna_engine.models.enums import Side, UnitStatus
 from cna_engine.engine.agent_interface import (
-    validate_command, ROLE_COMMANDS,
-    ROLE_COMMANDER, ROLE_GROUND, ROLE_LOGISTICS, ROLE_AIR, ROLE_NAVAL,
+    validate_command,
 )
-from cna_engine.engine.movement import get_neighbors, parse_hex_id
+from cna_engine.engine.movement import get_neighbors
 from cna_engine.engine.turn_runner import PausePoint
 
 from .config import OrchestratorConfig
@@ -32,7 +31,7 @@ from .situations import (
     StateSignals, SituationLabel,
     extract_signals, deterministic_classify,
     build_classifier_system_prompt, build_classifier_user_prompt,
-    parse_classifier_response, SITUATION_TO_CATEGORY,
+    parse_classifier_response,
 )
 from .playbooks import Playbook, PlaybookRegistry
 from .tool_schemas import build_tool_list, create_tool_handler
@@ -417,7 +416,6 @@ class SituationEngine:
         - break_contact for all engaged friendly units
         - move_unit toward rear for units in FIGHTING_RETREAT posture
         """
-        from cna_engine.engine.agent_interface import _compute_suggested_moves
         from cna_engine.engine.movement import _hex_distance
 
         orders: list[dict] = []
