@@ -5,7 +5,6 @@ Loads hex terrain from the extracted database and provides overlay data
 (roads, ports, airfields, named locations).
 """
 import json
-import os
 from pathlib import Path
 
 _FILES_DIR = Path(__file__).resolve().parent.parent.parent / "files"

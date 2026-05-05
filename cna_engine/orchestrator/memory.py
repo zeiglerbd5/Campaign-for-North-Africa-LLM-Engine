@@ -10,7 +10,6 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from cna_engine.models.game_state import GameState
-from cna_engine.models.enums import Side
 
 logger = logging.getLogger(__name__)
 

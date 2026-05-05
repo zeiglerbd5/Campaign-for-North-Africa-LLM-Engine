@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from cna_engine.engine.combat import (
     roll_d66, d66_in_range, resolve_barrage, resolve_anti_armor,
-    resolve_close_assault, BarrageResult, AntiArmorResult, CloseAssaultResult,
+    resolve_close_assault,
 )
 
 

@@ -7,10 +7,9 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Optional
 
 from cna_engine.engine.agent_interface import (
-    get_state_view, generate_agent_prompt, validate_command,
+    generate_agent_prompt, validate_command,
     ROLE_GROUND, ROLE_LOGISTICS, ROLE_AIR, ROLE_NAVAL,
     ROLE_COMMANDS,
 )

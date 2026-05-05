@@ -16,7 +16,7 @@ from typing import Callable
 from cna_engine.models.game_state import GameState
 from cna_engine.models.enums import Side, UnitStatus
 from cna_engine.engine.agent_interface import (
-    validate_command, _compute_suggested_moves, ROLE_COMMANDS,
+    validate_command, _compute_suggested_moves,
 )
 from cna_engine.engine.movement import get_neighbors
 

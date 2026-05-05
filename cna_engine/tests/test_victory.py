@@ -7,13 +7,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from cna_engine.engine.victory import (
     get_hex_controller, get_objective_statuses, calculate_vp,
     assess_victory, OBJECTIVE_HEXES,
-    DECISIVE_VICTORY_MARGIN, MARGINAL_VICTORY_MARGIN,
     VP_PER_STRENGTH_POINT_DESTROYED,
 )
 from cna_engine.models.game_state import (
     GameState, Unit, HexState, TurnState, TOEStrength,
 )
-from cna_engine.models.enums import Side, UnitStatus, TerrainType, MotorizationType
+from cna_engine.models.enums import Side, TerrainType, MotorizationType
 
 
 def _make_unit(uid, side=Side.ALLIED, hex_id="E1326", strength=10):

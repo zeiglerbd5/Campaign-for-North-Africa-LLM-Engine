@@ -17,14 +17,13 @@ from cna_engine.engine.supply import (
     execute_truck_load, execute_truck_unload,
     create_supply_dump, draw_from_dump, draw_water_from_terrain,
     execute_stores_expenditure,
-    AMMO_COST, BASELINE_WATER_PER_GT, BASELINE_STORES_PER_GT,
-    ATTACH_TRUCK_COST, DETACH_TRUCK_COST, LOAD_UNLOAD_COST,
+    AMMO_COST, ATTACH_TRUCK_COST, DETACH_TRUCK_COST,
 )
 from cna_engine.models.game_state import (
     GameState, Unit, HexState, TOEStrength, UnitSupply, SupplyDump,
 )
 from cna_engine.models.enums import (
-    Side, UnitStatus, RoadType, TerrainType, MotorizationType,
+    Side, UnitStatus, TerrainType, MotorizationType,
 )
 from cna_engine.data.reference_data import ReferenceData, TerrainInfo
 
@@ -782,7 +781,6 @@ def run_mini_scenario():
     state.turn.game_turn = 15
 
     # Map: supply depot at D0821, forward area at D0922 (adjacent)
-    from cna_engine.engine.movement import get_neighbors
     state.hexes["D0821"] = HexState(hex_id="D0821", terrain=TerrainType.CLEAR)
     state.hexes["D0922"] = HexState(hex_id="D0922", terrain=TerrainType.CLEAR)
 

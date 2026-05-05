@@ -10,10 +10,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
 
-from cna_engine.models.game_state import GameState, Unit, HexState
-from cna_engine.models.enums import Side, UnitStatus, UnitClass
+from cna_engine.models.game_state import GameState
+from cna_engine.models.enums import Side, UnitStatus
 from cna_engine.engine.combat import roll_d6
-from cna_engine.engine.movement import get_neighbors, are_adjacent
+from cna_engine.engine.movement import get_neighbors
 
 
 # ════════════════════════════════════════

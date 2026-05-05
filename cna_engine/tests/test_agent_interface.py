@@ -12,13 +12,13 @@ from cna_engine.engine.agent_interface import (
     VALID_ROLES, ROLE_COMMANDS,
 )
 from cna_engine.models.game_state import (
-    GameState, Unit, Formation, HexState, TurnState,
+    GameState, Unit, HexState, TurnState,
     TOEStrength, UnitSupply, SupplyDump, Aircraft, SGSU,
     FleetState, ConvoyState,
 )
 from cna_engine.models.enums import (
     Side, UnitStatus, GamePhase, TerrainType,
-    MotorizationType, AircraftStatus, AircraftMission,
+    MotorizationType, AircraftStatus,
 )
 
 

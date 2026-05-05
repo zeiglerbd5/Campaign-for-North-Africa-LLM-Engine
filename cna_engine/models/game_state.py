@@ -7,9 +7,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
 from .enums import (
-    Side, Nationality, UnitClass, UnitSize, MotorizationType, UnitStatus,
-    TerrainType, RoadType, FortLevel, Weather, Season, AircraftType,
-    AircraftMission, AircraftStatus, SupplyType, GamePhase, OpStagePhase,
+    MotorizationType, UnitStatus,
+    RoadType, Weather, Season, AircraftMission, AircraftStatus, GamePhase,
 )
 
 

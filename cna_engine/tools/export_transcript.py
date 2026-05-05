@@ -19,7 +19,6 @@ from cna_engine.tools.export_logsheets import (
     discover_saves,
     extract_events,
     extract_turn_info,
-    gt_to_date,
     load_save,
 )
 from cna_engine.tools.notation import (

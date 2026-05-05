@@ -10,15 +10,14 @@ Aircraft are based at SGSUs (airbases) and fly missions from there.
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
-import random
 
 from cna_engine.models.game_state import (
-    GameState, Aircraft, Pilot, SGSU, HexState, Unit,
+    GameState,
 )
 from cna_engine.models.enums import (
-    Side, AircraftType, AircraftMission, AircraftStatus, UnitStatus,
+    Side, AircraftMission, AircraftStatus, UnitStatus,
 )
-from cna_engine.engine.combat import roll_d66, roll_d6, d66_in_range
+from cna_engine.engine.combat import roll_d6
 
 
 # ════════════════════════════════════════

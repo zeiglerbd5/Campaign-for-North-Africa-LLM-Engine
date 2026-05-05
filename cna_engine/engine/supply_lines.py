@@ -9,10 +9,10 @@ from dataclasses import dataclass, field
 from typing import Optional
 from collections import deque
 
-from cna_engine.models.game_state import GameState, Unit, HexState
+from cna_engine.models.game_state import GameState
 from cna_engine.models.enums import Side, UnitStatus
 from cna_engine.engine.movement import (
-    get_neighbors, is_hex_in_ezoc, get_ezoc_hexes,
+    get_neighbors, get_ezoc_hexes,
 )
 
 

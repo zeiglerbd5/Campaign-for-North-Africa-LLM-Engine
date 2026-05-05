@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from typing import Optional
 import random
 
-from cna_engine.models.game_state import GameState, Unit, HexState
-from cna_engine.models.enums import Side, UnitClass, UnitStatus
+from cna_engine.models.game_state import GameState, Unit
+from cna_engine.models.enums import UnitClass, UnitStatus
 from cna_engine.engine.movement import get_neighbors
 
 

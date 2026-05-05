@@ -12,7 +12,7 @@ from cna_engine.engine.movement import get_neighbors
 from cna_engine.models.game_state import (
     GameState, Unit, HexState, TOEStrength, SupplyDump,
 )
-from cna_engine.models.enums import Side, UnitStatus, TerrainType, MotorizationType
+from cna_engine.models.enums import Side, TerrainType, MotorizationType
 
 
 def _make_unit(uid, side=Side.ALLIED, hex_id="D0821", strength=10):

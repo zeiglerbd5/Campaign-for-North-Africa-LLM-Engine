@@ -6,14 +6,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from cna_engine.engine.breakdown import (
     check_breakdown, execute_breakdown_segment,
-    BREAKDOWN_TERRAINS, BREAKDOWN_THRESHOLD, BREAKDOWN_SP_LOSS,
-    BREAKDOWN_COHESION_PENALTY, BREAKDOWN_MOTORIZATIONS,
+    BREAKDOWN_COHESION_PENALTY,
 )
 from cna_engine.models.game_state import (
     GameState, Unit, HexState, TurnState, TOEStrength,
 )
 from cna_engine.models.enums import (
-    Side, UnitStatus, TerrainType, MotorizationType,
+    Side, TerrainType, MotorizationType,
 )
 
 

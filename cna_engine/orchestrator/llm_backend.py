@@ -249,10 +249,14 @@ class OllamaClient:
             },
         }
         # Thinking/reasoning control for models that support it (e.g., Qwen3).
-        # - think explicitly passed → use it (True/False)
-        # - think is None (default) → False for qwen3, omit for other models
+        # Ollama accepts True/False/"high"/"medium"/"low" only. The vLLM/MLX
+        # "budget_tokens:N" form degrades to True here since Ollama has no
+        # equivalent budget knob.
         if think is not None:
-            payload["think"] = think
+            if isinstance(think, str) and think.startswith("budget_tokens:"):
+                payload["think"] = True
+            else:
+                payload["think"] = think
         elif "qwen3" in self.config.model.lower():
             payload["think"] = False
 

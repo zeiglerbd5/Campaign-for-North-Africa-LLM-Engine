@@ -8,9 +8,8 @@ Sighting flags expire at the end of each OpStage (handled by SoP).
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Optional
 
-from cna_engine.models.game_state import GameState, HexState, Unit
+from cna_engine.models.game_state import GameState, Unit
 from cna_engine.models.enums import (
     Side, UnitStatus, TerrainType, Weather,
 )

@@ -5,7 +5,7 @@ Handles dataclass → dict → JSON and back.
 """
 import json
 import os
-from dataclasses import asdict, fields, is_dataclass
+from dataclasses import fields, is_dataclass
 from datetime import datetime
 from typing import Any
 

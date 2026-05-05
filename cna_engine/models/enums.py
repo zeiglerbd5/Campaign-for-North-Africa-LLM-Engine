@@ -2,7 +2,7 @@
 CNA Engine — Enumerations and Constants
 All game-level enums, side identifiers, unit types, terrain, status markers, etc.
 """
-from enum import Enum, IntEnum, auto
+from enum import Enum, IntEnum
 
 
 class Side(str, Enum):

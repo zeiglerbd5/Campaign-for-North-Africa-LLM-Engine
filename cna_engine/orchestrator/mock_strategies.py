@@ -9,12 +9,11 @@ Separate from MockLLMClient to avoid breaking existing orchestrator tests.
 from __future__ import annotations
 import json
 import logging
-from dataclasses import dataclass
 from typing import Optional
 
 from cna_engine.models.game_state import GameState, Unit
 from cna_engine.models.enums import (
-    Side, UnitStatus, AircraftStatus, MotorizationType,
+    Side, UnitStatus, AircraftStatus,
 )
 from cna_engine.engine.movement import get_neighbors, parse_hex_id
 from cna_engine.engine.agent_interface import ROLE_COMMANDS

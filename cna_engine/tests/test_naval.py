@@ -9,13 +9,12 @@ from cna_engine.engine.naval import (
     unload_at_port, execute_convoy_phase,
     reset_fleet_for_turn, reset_convoy_for_turn,
     INTERCEPTION_BASE_THRESHOLD, CONVOY_LOSS_TABLE,
-    SUPPLY_DISTRIBUTION_RATIOS, DEFAULT_PORT_EFFICIENCY,
-    MAX_FLEET_SORTIES_PER_TURN,
+    SUPPLY_DISTRIBUTION_RATIOS, MAX_FLEET_SORTIES_PER_TURN,
 )
 from cna_engine.models.game_state import (
     GameState, HexState, FleetState, ConvoyState,
 )
-from cna_engine.models.enums import Side, TerrainType
+from cna_engine.models.enums import TerrainType
 
 
 def _make_state_with_port(port_name="Tripoli", hex_id="A3511"):

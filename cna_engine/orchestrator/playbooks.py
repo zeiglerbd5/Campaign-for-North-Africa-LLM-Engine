@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 from cna_engine.models.game_state import GameState
-from cna_engine.models.enums import Side, UnitStatus, MotorizationType, TerrainType
+from cna_engine.models.enums import Side, UnitStatus, TerrainType
 from cna_engine.orchestrator.situations import StateSignals
 
 logger = logging.getLogger(__name__)

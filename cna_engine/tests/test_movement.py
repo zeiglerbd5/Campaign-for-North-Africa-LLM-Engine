@@ -10,9 +10,8 @@ import random
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from cna_engine.engine.movement import (
-    parse_hex_id, HexCoord, get_neighbors, are_adjacent,
-    get_ezoc_hexes, is_hex_in_ezoc, _unit_exerts_zoc,
-    compute_hex_entry_cost, compute_stacking_in_hex, check_stacking,
+    parse_hex_id, get_neighbors, are_adjacent,
+    get_ezoc_hexes, is_hex_in_ezoc, compute_hex_entry_cost, compute_stacking_in_hex, check_stacking,
     break_contact, break_engaged, auto_clear_contact,
     validate_move, execute_move,
     check_reaction_eligibility, attempt_reaction_move,
@@ -22,7 +21,7 @@ from cna_engine.models.game_state import (
     GameState, Unit, HexState, TOEStrength, SupplyDump,
 )
 from cna_engine.models.enums import (
-    Side, UnitStatus, RoadType, TerrainType, MotorizationType,
+    Side, UnitStatus, RoadType, MotorizationType,
 )
 from cna_engine.data.reference_data import ReferenceData, TerrainInfo
 

@@ -11,9 +11,8 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from cna_engine.engine.agent_interface import (
-    get_state_view, execute_command, validate_command,
-    ROLE_COMMANDER, ROLE_GROUND, ROLE_LOGISTICS, ROLE_AIR, ROLE_NAVAL,
-    ROLE_COMMANDS, CommandResult,
+    execute_command, validate_command,
+    ROLE_COMMANDER, ROLE_COMMANDS,
 )
 from cna_engine.models.game_state import GameState
 from cna_engine.models.serialization import state_summary

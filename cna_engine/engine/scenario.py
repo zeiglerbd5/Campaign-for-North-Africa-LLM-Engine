@@ -8,20 +8,20 @@ starting scenario.
 """
 from __future__ import annotations
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 from cna_engine.models.game_state import (
     GameState, Unit, Formation, HexState, TurnState,
-    TOEStrength, UnitSupply, SupplyDump, Aircraft, Pilot, SGSU,
-    FleetState, ConvoyState,
+    TOEStrength, UnitSupply, SupplyDump, Aircraft, SGSU,
+    FleetState,
 )
 from cna_engine.models.enums import (
     Side, Nationality, UnitClass, UnitSize, MotorizationType,
     UnitStatus, TerrainType, RoadType, GamePhase, Weather, Season,
-    AircraftStatus, AircraftMission, AircraftType,
+    AircraftStatus, AircraftMission,
 )
 from cna_engine.engine.air import get_aircraft_stats
 

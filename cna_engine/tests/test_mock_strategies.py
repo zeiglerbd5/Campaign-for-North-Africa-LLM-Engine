@@ -19,13 +19,12 @@ from cna_engine.orchestrator.orchestrator import GameOrchestrator
 from cna_engine.orchestrator.experts import ExpertAgent
 from cna_engine.orchestrator.general import GeneralAgent
 from cna_engine.engine.agent_interface import (
-    ROLE_GROUND, ROLE_LOGISTICS, ROLE_AIR, ROLE_NAVAL,
-    ROLE_COMMANDS,
+    ROLE_GROUND, ROLE_LOGISTICS,
 )
 from cna_engine.engine.scenario import load_scenario
 from cna_engine.engine.turn_runner import PausePoint
 from cna_engine.models.enums import (
-    Side, GamePhase, OpStagePhase, UnitStatus,
+    Side, GamePhase, OpStagePhase,
 )
 
 
