@@ -1209,6 +1209,12 @@ def _coerce_params(command: str, kwargs: dict) -> dict:
                 if alt_key in kwargs:
                     kwargs["target_hex"] = kwargs.pop(alt_key)
                     break
+        # Remap sortie_type → mission (common LLM mistake)
+        if "mission" not in kwargs and "sortie_type" in kwargs:
+            kwargs["mission"] = kwargs.pop("sortie_type")
+        # Default mission for fly_sortie if LLM omitted it entirely
+        if command == "fly_sortie" and "mission" not in kwargs:
+            kwargs["mission"] = "bombing"
         # Strip stray keys the LLM may invent (e.g. recon_type)
         _VALID_AIR_KEYS = {"aircraft_id", "target_hex", "mission", "target_class"}
         kwargs = {k: v for k, v in kwargs.items() if k in _VALID_AIR_KEYS}

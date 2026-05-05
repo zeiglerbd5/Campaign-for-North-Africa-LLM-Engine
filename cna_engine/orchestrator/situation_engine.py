@@ -1814,11 +1814,14 @@ class SituationEngine:
 
         system += (
             "\n\nYou have tools to inspect units, check hexes, and issue orders. "
-            "Use inspect_unit and check_hex to gather information, then "
-            "issue_order to submit each order individually. Each order is "
-            "validated immediately — if rejected, read the error and try a "
-            f"different approach. You may issue up to {max_orders} orders. "
-            "When done, call issue_order with command='end_phase'."
+            "IMPORTANT: Start issuing orders quickly — do NOT spend all your "
+            "turns inspecting. Inspect 1-2 key units, then immediately begin "
+            "calling issue_order. Each order is validated immediately — if "
+            "rejected, read the error and try a different approach. "
+            f"You may issue up to {max_orders} orders. "
+            "When done, call issue_order with command='end_phase'. "
+            "The battlefield state above already shows all unit positions and "
+            "strength — you do NOT need to inspect every unit before acting."
         )
 
         # Query RAG for situationally relevant rules/doctrine/playbook
@@ -1871,7 +1874,10 @@ class SituationEngine:
         )
         user_lines.append(
             "\nUse inspect_unit and check_hex to examine the battlefield, "
-            "then issue_order for each order."
+            "then issue_order for each order. "
+            "IMPORTANT: All orders MUST go through issue_order — do not call "
+            "game commands (move_unit, fire_barrage, etc.) directly as tools. "
+            "Use the exact unit IDs shown in the battlefield state above."
         )
 
         messages = [

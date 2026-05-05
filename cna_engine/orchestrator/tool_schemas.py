@@ -137,6 +137,8 @@ def create_tool_handler(
     # Pre-compute suggested moves once for inspect_unit
     _suggestions_cache: dict[str, str] = {}
     _suggestions_computed = [False]
+    _inspect_count = [0]
+    _MAX_INSPECTS = 4  # After this many inspects, nudge toward ordering
 
     def _get_suggestions() -> dict[str, str]:
         if not _suggestions_computed[0]:
@@ -158,6 +160,14 @@ def create_tool_handler(
     from .general import _COMMAND_TO_ROLE
 
     def handler(tool_name: str, tool_args: dict) -> str:
+        if tool_name in ("inspect_unit", "check_hex"):
+            _inspect_count[0] += 1
+            if _inspect_count[0] > _MAX_INSPECTS:
+                return json.dumps({
+                    "warning": "Inspection limit reached. You have enough "
+                    "information — call issue_order now to submit orders, "
+                    "or issue_order with command='end_phase' to finish.",
+                })
         if tool_name == "inspect_unit":
             return _handle_inspect_unit(tool_args)
         elif tool_name == "check_hex":
@@ -165,7 +175,21 @@ def create_tool_handler(
         elif tool_name == "issue_order":
             return _handle_issue_order(tool_args)
         else:
-            return json.dumps({"error": f"Unknown tool: {tool_name}"})
+            # LLM may try to call game commands directly (e.g. fleet_sortie)
+            # instead of wrapping them in issue_order — route them through.
+            logger.info(
+                "Tool handler: routing unknown tool '%s' as issue_order",
+                tool_name,
+            )
+            # If the LLM already provided {"command": X, "params": Y}, use that.
+            # Otherwise, treat tool_name as the command and tool_args as params.
+            if "command" in tool_args and "params" in tool_args:
+                return _handle_issue_order(tool_args)
+            else:
+                return _handle_issue_order({
+                    "command": tool_name,
+                    "params": tool_args,
+                })
 
     def _handle_inspect_unit(args: dict) -> str:
         uid = args.get("unit_id", "")
@@ -258,7 +282,19 @@ def create_tool_handler(
         params = args.get("params", {})
 
         if not isinstance(params, dict):
-            return json.dumps({"error": "params must be a JSON object."})
+            params = {}
+
+        # Flatten: if the LLM passed top-level keys alongside "params",
+        # merge them into params (e.g. {'aircraft_id': 'x', 'params': {'target_hex': 'y'}})
+        # Skip 'command' and 'params' themselves, and any nested 'command' that
+        # leaked from the routing layer.
+        extra_keys = {k: v for k, v in args.items()
+                      if k not in ("command", "params")}
+        if extra_keys:
+            # Also strip 'command' from the params dict if it snuck in
+            params = {**extra_keys, **{k: v for k, v in params.items()
+                                       if k != "command"}}
+
 
         # end_phase is always valid
         if command == "end_phase":

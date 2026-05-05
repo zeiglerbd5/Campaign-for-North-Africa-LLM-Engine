@@ -38,8 +38,8 @@ class OrchestratorConfig:
 
     # Tool-calling mode (agentic loop instead of single-shot JSON)
     tool_calling: bool = False
-    tool_max_iterations: int = 8
-    tool_timeout: int = 120  # seconds for entire tool-calling loop
+    tool_max_iterations: int = 20
+    tool_timeout: int = 180  # seconds for entire tool-calling loop
 
     # Logging
     log_llm_calls: bool = True
