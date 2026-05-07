@@ -23,7 +23,8 @@ def _make_minimal_state():
         current_season=Season.AUTUMN,
         current_weather=Weather.CLEAR,
     )
-    # Need at least one unit for stores expenditure
+    # Need at least one unit per side — is_game_over() ends the game early
+    # if either side has no active units left.
     state.units["u1"] = Unit(
         id="u1", name="Test Unit", side=Side.ALLIED, nationality="british",
         unit_class="infantry", unit_size="battalion",
@@ -32,7 +33,16 @@ def _make_minimal_state():
         current_strength=TOEStrength(infantry=10),
         toe_strength=TOEStrength(infantry=10),
     )
+    state.units["u2"] = Unit(
+        id="u2", name="Test Unit (Axis)", side=Side.AXIS, nationality="italian",
+        unit_class="infantry", unit_size="battalion",
+        motorization=MotorizationType.MOTORIZED, hex_id="A3511",
+        base_cpa=8, stacking_points=2,
+        current_strength=TOEStrength(infantry=10),
+        toe_strength=TOEStrength(infantry=10),
+    )
     state.hexes["D0821"] = HexState(hex_id="D0821", terrain="clear")
+    state.hexes["A3511"] = HexState(hex_id="A3511", terrain="clear")
     state.allied_replacement_pool = {"infantry": 0, "armor": 0, "gun": 0}
     state.axis_replacement_pool = {"infantry": 0, "armor": 0, "gun": 0}
     return state

@@ -273,6 +273,12 @@ def _get_units_for_side(state: GameState, side: str, role: str) -> list[dict]:
             info["stores"] = unit.supply.stores
             info["truck_points"] = unit.attached_truck_points
             info["has_truck"] = unit.attached_truck_points > 0
+            info["truck_cargo"] = {
+                "fuel": unit.truck_cargo_fuel,
+                "water": unit.truck_cargo_water,
+                "ammo": unit.truck_cargo_ammo,
+                "stores": unit.truck_cargo_stores,
+            }
 
         units.append(info)
 

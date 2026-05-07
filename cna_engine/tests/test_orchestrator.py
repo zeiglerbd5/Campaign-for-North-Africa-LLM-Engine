@@ -392,8 +392,9 @@ def test_full_turn_mock():
           f"orders={phase_summary.orders_issued}, "
           f"succeeded={phase_summary.orders_succeeded}")
 
-    # Verify LLM was called (experts + general)
-    assert len(client.call_log) >= 2  # at least 1 expert + 1 general
+    # Verify LLM was called. Situation engine makes one execute_playbook
+    # call per phase per side; legacy expert+general would make several.
+    assert len(client.call_log) >= 1
     print(f"  LLM calls made: {len(client.call_log)}")
 
     print("  PASSED\n")

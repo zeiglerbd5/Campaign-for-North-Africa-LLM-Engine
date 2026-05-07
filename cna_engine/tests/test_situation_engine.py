@@ -615,13 +615,15 @@ def test_config_toggle():
     print("TEST 10: Config Toggle")
     print("=" * 60)
 
-    config_off = OrchestratorConfig()
-    assert config_off.use_situation_engine is False
-    print("  Default: situation engine OFF")
+    # Situation engine is the default active pipeline.
+    config_default = OrchestratorConfig()
+    assert config_default.use_situation_engine is True
+    print("  Default: situation engine ON")
 
-    config_on = OrchestratorConfig(use_situation_engine=True)
-    assert config_on.use_situation_engine is True
-    print("  Explicit: situation engine ON")
+    # Old expert+general path is preserved and still reachable for comparison.
+    config_legacy = OrchestratorConfig(use_situation_engine=False)
+    assert config_legacy.use_situation_engine is False
+    print("  Legacy expert+general path: reachable via explicit flag")
 
     print("  PASSED\n")
 

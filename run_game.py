@@ -168,7 +168,6 @@ def setup_game(args):
         model=args.model,
         temperature=args.temperature,
         backend=args.backend,
-        use_situation_engine=getattr(args, "situation_engine", False),
         tool_calling=tool_calling,
     )
 
@@ -216,11 +215,8 @@ def setup_game(args):
         print(f"  No LLM server available — falling back to Smart Mock")
         llm_client = SmartMockLLMClient(state, config)
 
-    # Auto-enable situation engine for MLX backend
     # Tool-calling stays off by default — Qwen3-8B explores but never
     # issues orders in the agentic loop. Use --tool-calling to opt in.
-    if isinstance(llm_client, MLXClient):
-        config.use_situation_engine = True
 
     # Create orchestrator
     save_dir = args.save_dir
@@ -368,12 +364,8 @@ def parse_args():
         help="Disable auto-saving",
     )
     parser.add_argument(
-        "--situation-engine", action="store_true",
-        help="Use two-stage situation-action pipeline instead of expert+general",
-    )
-    parser.add_argument(
         "--tool-calling", action="store_true",
-        help="Use agentic tool-calling loop (requires --situation-engine and mlx backend)",
+        help="Use agentic tool-calling loop (requires mlx backend)",
     )
     parser.add_argument(
         "--log-dir", type=str, default="logs",

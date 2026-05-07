@@ -149,7 +149,7 @@ def test_air_no_aircraft():
     state.aircraft.clear()
     no_ac_result = _air_strategy(state, "allied")
     assert len(no_ac_result["recommendations"]) == 0
-    assert "no aircraft" in no_ac_result["assessment"].lower()
+    assert "0 aircraft" in no_ac_result["assessment"].lower()
     print(f"  No aircraft: {no_ac_result['assessment']}")
 
     # Restore
@@ -254,7 +254,8 @@ def test_full_phase():
     general = GeneralAgent(Side.ALLIED.value, client, config, experts)
 
     pause = _make_pause_point()
-    orders = general.decide(state, pause)
+    decision = general.decide(state, pause)
+    orders = decision.orders
 
     assert isinstance(orders, list)
     assert len(orders) >= 1

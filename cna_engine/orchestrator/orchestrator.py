@@ -185,15 +185,6 @@ class GameOrchestrator:
             save_dir: Optional directory for auto-saving after each turn.
             log_dir: Directory for JSONL game logs (default: "logs").
         """
-        # Hard-switch: situation engine is mandatory. Override if disabled.
-        if not self.config.use_situation_engine:
-            logger.warning(
-                "use_situation_engine=False is deprecated. "
-                "The expert+general pipeline is no longer supported. "
-                "Forcing use_situation_engine=True."
-            )
-            self.config.use_situation_engine = True
-
         if reinforcements is not None:
             self.reinforcements = reinforcements
         if memory is not None:
@@ -297,6 +288,9 @@ class GameOrchestrator:
         start_gt = self.state.turn.game_turn
         summary = TurnSummary(game_turn=start_gt)
 
+        prompt_tok_at_start = getattr(self.llm_client, "prompt_tokens_total", 0)
+        completion_tok_at_start = getattr(self.llm_client, "completion_tokens_total", 0)
+
         logger.info("=" * 60)
         logger.info("TURN GT%d START", start_gt)
         logger.info("=" * 60)
@@ -369,11 +363,23 @@ class GameOrchestrator:
         turn_ms = int((time.monotonic() - turn_start) * 1000)
         summary.elapsed_ms = turn_ms
 
+        prompt_tok_delta = (
+            getattr(self.llm_client, "prompt_tokens_total", 0)
+            - prompt_tok_at_start
+        )
+        completion_tok_delta = (
+            getattr(self.llm_client, "completion_tokens_total", 0)
+            - completion_tok_at_start
+        )
+
         logger.info("-" * 60)
         logger.info(
-            "TURN GT%d DONE: %dms (%.1fs)  interactive=%d  auto=%d",
+            "TURN GT%d DONE: %dms (%.1fs)  interactive=%d  auto=%d  "
+            "prompt_tok=%d  completion_tok=%d  total_tok=%d",
             start_gt, turn_ms, turn_ms / 1000,
             summary.interactive_phases, summary.auto_phases,
+            prompt_tok_delta, completion_tok_delta,
+            prompt_tok_delta + completion_tok_delta,
         )
         if summary.phase_summaries:
             logger.info("Phase timing breakdown:")

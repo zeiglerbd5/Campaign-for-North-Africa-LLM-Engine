@@ -148,6 +148,8 @@ class OllamaClient:
     def __init__(self, config: OrchestratorConfig):
         self.config = config
         self.base_url = config.ollama_url.rstrip("/")
+        self.prompt_tokens_total = 0
+        self.completion_tokens_total = 0
 
     def chat(
         self,
@@ -187,6 +189,8 @@ class OllamaClient:
             try:
                 result = self._call(messages, json_mode, attempt, think=think)
                 total_ms = int((time.monotonic() - call_start) * 1000)
+                self.prompt_tokens_total += result.prompt_tokens
+                self.completion_tokens_total += result.completion_tokens
                 logger.info(
                     "LLM OK  model=%s  attempt=%d  duration=%dms  "
                     "prompt_tok=%d  completion_tok=%d  caller=[%s]",
@@ -310,6 +314,8 @@ class MLXClient:
     def __init__(self, config: OrchestratorConfig):
         self.config = config
         self.base_url = config.mlx_url.rstrip("/")
+        self.prompt_tokens_total = 0
+        self.completion_tokens_total = 0
 
     def chat(
         self,
@@ -347,6 +353,8 @@ class MLXClient:
             try:
                 result = self._call(messages, json_mode, attempt, think=think)
                 total_ms = int((time.monotonic() - call_start) * 1000)
+                self.prompt_tokens_total += result.prompt_tokens
+                self.completion_tokens_total += result.completion_tokens
                 logger.info(
                     "LLM OK  model=%s  attempt=%d  duration=%dms  "
                     "prompt_tok=%d  completion_tok=%d  caller=[%s]",
@@ -560,8 +568,12 @@ class MLXClient:
 
             data = resp.json()
             usage = data.get("usage", {})
-            total_prompt_tok += usage.get("prompt_tokens", 0)
-            total_completion_tok += usage.get("completion_tokens", 0)
+            iter_prompt = usage.get("prompt_tokens", 0)
+            iter_completion = usage.get("completion_tokens", 0)
+            total_prompt_tok += iter_prompt
+            total_completion_tok += iter_completion
+            self.prompt_tokens_total += iter_prompt
+            self.completion_tokens_total += iter_completion
 
             choice = data.get("choices", [{}])[0]
             message = choice.get("message", {})
@@ -573,8 +585,9 @@ class MLXClient:
                 duration_ms = int((time.monotonic() - loop_start) * 1000)
                 logger.info(
                     "chat_with_tools: done after %d iterations (%dms), "
-                    "%d tool calls total",
+                    "%d tool calls total  prompt_tok=%d  completion_tok=%d",
                     iteration, duration_ms, len(all_tool_results),
+                    total_prompt_tok, total_completion_tok,
                 )
                 return ToolCallingResponse(
                     tool_results=all_tool_results,
@@ -642,8 +655,10 @@ class MLXClient:
         # Exhausted max_iterations
         duration_ms = int((time.monotonic() - loop_start) * 1000)
         logger.warning(
-            "chat_with_tools: max_iterations=%d reached (%dms)",
+            "chat_with_tools: max_iterations=%d reached (%dms)  "
+            "prompt_tok=%d  completion_tok=%d",
             max_iterations, duration_ms,
+            total_prompt_tok, total_completion_tok,
         )
         return ToolCallingResponse(
             tool_results=all_tool_results,
@@ -675,6 +690,8 @@ class MockLLMClient:
         self.config = config or OrchestratorConfig()
         self.call_log: list[dict] = []
         self._custom_responses: dict[str, dict] = {}
+        self.prompt_tokens_total = 0
+        self.completion_tokens_total = 0
 
     def set_response(self, role_keyword: str, response: dict):
         """Register a custom response for a role keyword."""

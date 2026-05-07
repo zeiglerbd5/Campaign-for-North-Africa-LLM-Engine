@@ -469,7 +469,10 @@ def test_range_validation():
         bombload_remaining=2, tacair_remaining=4,
     )
     state.aircraft["hurr1"] = ac2
-    state.hexes["D2821"] = HexState(hex_id="D2821", terrain=TerrainType.CLEAR)
+    # Pre-sight target so semi-sighted abort RNG can't flake the range check
+    state.hexes["D2821"] = HexState(
+        hex_id="D2821", terrain=TerrainType.CLEAR, allied_sighted=True,
+    )
 
     r2 = fly_sortie(state, "hurr1", AircraftMission.BOMBING, "D2821",
                     dice_overrides={"maintenance": 6})
