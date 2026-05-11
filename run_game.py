@@ -28,7 +28,9 @@ from cna_engine.engine.scenario import load_scenario
 from cna_engine.models.serialization import load_state
 from cna_engine.orchestrator.config import OrchestratorConfig
 from cna_engine.orchestrator.orchestrator import GameOrchestrator
-from cna_engine.orchestrator.llm_backend import OllamaClient, MLXClient
+from cna_engine.orchestrator.llm_backend import (
+    OllamaClient, MLXClient, AnthropicClient,
+)
 from cna_engine.orchestrator.mock_strategies import SmartMockLLMClient
 from cna_engine.orchestrator.memory import TurnMemory
 
@@ -193,6 +195,14 @@ def setup_game(args):
     if args.mock:
         print("  LLM: Smart Mock (no LLM server needed)")
         llm_client = SmartMockLLMClient(state, config)
+    elif args.backend == "anthropic":
+        anth = AnthropicClient(config)
+        if anth.is_available():
+            print(f"  LLM: Anthropic ({config.model})")
+            llm_client = anth
+        else:
+            print("  Anthropic backend unavailable (missing ANTHROPIC_API_KEY "
+                  "or anthropic SDK not installed)")
     elif args.backend in ("auto", "mlx"):
         mlx = MLXClient(config)
         if mlx.is_available():
@@ -324,8 +334,8 @@ def parse_args():
     )
     parser.add_argument(
         "--backend", type=str, default="auto",
-        choices=["auto", "ollama", "mlx"],
-        help="LLM backend: auto (try mlx then ollama), ollama, or mlx",
+        choices=["auto", "ollama", "mlx", "anthropic"],
+        help="LLM backend: auto (try mlx then ollama), ollama, mlx, or anthropic",
     )
     parser.add_argument(
         "--mock", action="store_true",
@@ -381,6 +391,9 @@ def main():
     if args.model is None:
         if args.backend == "ollama":
             args.model = "qwen3:8b"
+        elif args.backend == "anthropic":
+            from cna_engine.orchestrator.llm_backend import ANTHROPIC_DEFAULT_MODEL
+            args.model = ANTHROPIC_DEFAULT_MODEL
         else:
             from cna_engine.orchestrator.config import MLX_DEFAULT_MODEL
             args.model = MLX_DEFAULT_MODEL

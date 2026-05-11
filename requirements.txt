@@ -8,3 +8,6 @@ sentence-transformers>=2.7
 
 # MLX backend (Apple Silicon only; install separately if needed)
 # pip install mlx-lm
+
+# Anthropic backend (cloud inference via Claude; optional)
+# pip install anthropic

@@ -3,7 +3,7 @@ CNA Engine — Multi-Agent Orchestrator
 LLM-powered multi-agent system for playing Campaign for North Africa.
 """
 from .config import OrchestratorConfig
-from .llm_backend import OllamaClient, MockLLMClient, MLXClient
+from .llm_backend import OllamaClient, MockLLMClient, MLXClient, AnthropicClient
 from .mock_strategies import SmartMockLLMClient
 from .memory import TurnMemory
 from .experts import ExpertAgent, ExpertRecommendation
@@ -15,6 +15,7 @@ __all__ = [
     "OllamaClient",
     "MockLLMClient",
     "MLXClient",
+    "AnthropicClient",
     "SmartMockLLMClient",
     "TurnMemory",
     "ExpertAgent",

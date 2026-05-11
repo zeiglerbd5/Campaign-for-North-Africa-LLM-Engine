@@ -6,6 +6,7 @@ Includes MockLLMClient for testing without a live LLM.
 from __future__ import annotations
 import json
 import logging
+import os
 import re
 import time
 from dataclasses import dataclass, field
@@ -16,6 +17,9 @@ import requests
 from .config import OrchestratorConfig
 
 logger = logging.getLogger(__name__)
+
+
+ANTHROPIC_DEFAULT_MODEL = "claude-sonnet-4-6"
 
 
 def extract_json(text: str) -> dict:
@@ -677,6 +681,429 @@ class MLXClient:
             )
             return resp.status_code == 200
         except requests.RequestException:
+            return False
+
+
+class AnthropicClient:
+    """
+    Client for the Anthropic Messages API.
+
+    Supports prompt caching on the system prompt and tool definitions, and
+    extended thinking via budget_tokens for chat() (not chat_with_tools).
+
+    Auth: reads ANTHROPIC_API_KEY from the environment. Fails fast if missing.
+    """
+
+    def __init__(self, config: OrchestratorConfig):
+        self.config = config
+        self.prompt_tokens_total = 0
+        self.completion_tokens_total = 0
+        # Track caching separately so we can see hit rate in logs.
+        self.cache_read_tokens_total = 0
+        self.cache_creation_tokens_total = 0
+        self._client = None  # lazy: only instantiate when first used
+
+    def _get_client(self):
+        if self._client is not None:
+            return self._client
+        try:
+            import anthropic
+        except ImportError as e:
+            raise LLMError(
+                "anthropic SDK not installed. Run: pip install anthropic"
+            ) from e
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise LLMError(
+                "ANTHROPIC_API_KEY environment variable not set"
+            )
+        self._client = anthropic.Anthropic(
+            api_key=api_key,
+            timeout=float(self.config.timeout),
+        )
+        return self._client
+
+    @staticmethod
+    def _split_messages(messages: list[dict]) -> tuple[str, list[dict]]:
+        """Pull the system message out and pass the rest through unchanged."""
+        system_text = ""
+        out = []
+        for m in messages:
+            role = m.get("role")
+            if role == "system":
+                # Concatenate if multiple system messages (rare but possible).
+                system_text = (system_text + "\n" + m.get("content", "")).strip()
+            elif role in ("user", "assistant"):
+                out.append({"role": role, "content": m.get("content", "")})
+        return system_text, out
+
+    @staticmethod
+    def _build_system_param(system_text: str, cache: bool):
+        if not system_text:
+            return None
+        if cache:
+            return [{
+                "type": "text",
+                "text": system_text,
+                "cache_control": {"type": "ephemeral"},
+            }]
+        return system_text
+
+    @staticmethod
+    def _convert_tools(tools: list[dict], cache: bool) -> list[dict]:
+        """OpenAI function-calling format → Anthropic tool format."""
+        out = []
+        for t in tools:
+            if t.get("type") == "function" and "function" in t:
+                f = t["function"]
+                out.append({
+                    "name": f["name"],
+                    "description": f.get("description", ""),
+                    "input_schema": f.get(
+                        "parameters", {"type": "object", "properties": {}}
+                    ),
+                })
+            elif "name" in t and "input_schema" in t:
+                # Already Anthropic-shaped — pass through, drop any cache_control
+                # so we control where caching is applied.
+                out.append({
+                    k: v for k, v in t.items() if k != "cache_control"
+                })
+        if out and cache:
+            # Anthropic caches everything up to and including the marked block.
+            # Marking the last tool caches the entire tools array.
+            out[-1] = {**out[-1], "cache_control": {"type": "ephemeral"}}
+        return out
+
+    @staticmethod
+    def _build_thinking(think) -> Optional[dict]:
+        """Map the engine's think param to Anthropic's thinking config."""
+        if think is None or think is False:
+            return None
+        if isinstance(think, str) and think.startswith("budget_tokens:"):
+            try:
+                budget = int(think.split(":", 1)[1])
+                # Anthropic minimum is 1024.
+                return {"type": "enabled", "budget_tokens": max(budget, 1024)}
+            except (ValueError, IndexError):
+                return None
+        if think is True:
+            return {"type": "enabled", "budget_tokens": 2048}
+        return None
+
+    def chat(
+        self,
+        messages: list[dict],
+        json_mode: bool = True,
+        think: Optional[object] = None,
+    ) -> LLMResponse:
+        """Single-shot Messages API call with retries."""
+        last_error = None
+        call_start = time.monotonic()
+
+        caller_hint = ""
+        for msg in messages:
+            if msg.get("role") == "system":
+                caller_hint = msg.get("content", "")[:120].replace("\n", " ")
+                break
+
+        for attempt in range(1, self.config.max_retries + 1):
+            try:
+                result = self._call_single(messages, json_mode, think)
+                self.prompt_tokens_total += result.prompt_tokens
+                self.completion_tokens_total += result.completion_tokens
+                logger.info(
+                    "LLM OK  model=%s  attempt=%d  duration=%dms  "
+                    "prompt_tok=%d  completion_tok=%d  caller=[%s]",
+                    result.model, attempt, result.duration_ms,
+                    result.prompt_tokens, result.completion_tokens,
+                    caller_hint[:80],
+                )
+                return result
+            except (json.JSONDecodeError, LLMError) as e:
+                last_error = e
+                elapsed_ms = int((time.monotonic() - call_start) * 1000)
+                logger.warning(
+                    "LLM FAIL  attempt=%d/%d  elapsed=%dms  error=%s  caller=[%s]",
+                    attempt, self.config.max_retries, elapsed_ms, e,
+                    caller_hint[:80],
+                )
+                if isinstance(e, LLMError) and "empty content" in str(e).lower():
+                    break
+                if attempt < self.config.max_retries:
+                    is_json_fail = (
+                        isinstance(e, json.JSONDecodeError)
+                        or (isinstance(e, LLMError) and "json" in str(e).lower())
+                    )
+                    if is_json_fail and json_mode:
+                        messages = messages + [{
+                            "role": "user",
+                            "content": "Your previous response was not valid JSON. "
+                                       "Please respond with valid JSON only.",
+                        }]
+            except Exception as e:
+                # SDK-level errors (rate limit, network, etc.) — retry with same prompt
+                last_error = e
+                elapsed_ms = int((time.monotonic() - call_start) * 1000)
+                logger.warning(
+                    "LLM FAIL  attempt=%d/%d  elapsed=%dms  error=%s  caller=[%s]",
+                    attempt, self.config.max_retries, elapsed_ms, e,
+                    caller_hint[:80],
+                )
+
+        total_ms = int((time.monotonic() - call_start) * 1000)
+        raise LLMError(
+            f"Anthropic call failed after {self.config.max_retries} attempts "
+            f"({total_ms}ms total): {last_error}"
+        )
+
+    def _call_single(
+        self,
+        messages: list[dict],
+        json_mode: bool,
+        think: Optional[object],
+    ) -> LLMResponse:
+        client = self._get_client()
+        system_text, msgs = self._split_messages(messages)
+        system = self._build_system_param(
+            system_text, self.config.anthropic_cache
+        )
+        thinking = self._build_thinking(think)
+
+        kwargs: dict = {
+            "model": self.config.model,
+            "max_tokens": self.config.anthropic_max_tokens,
+            "messages": msgs,
+            "temperature": self.config.temperature,
+        }
+        if system is not None:
+            kwargs["system"] = system
+        if thinking is not None:
+            kwargs["thinking"] = thinking
+            # Extended thinking requires temperature=1.
+            kwargs["temperature"] = 1.0
+            # Ensure max_tokens leaves room beyond the thinking budget.
+            min_max = thinking["budget_tokens"] + 1024
+            if kwargs["max_tokens"] < min_max:
+                kwargs["max_tokens"] = min_max
+
+        start = time.monotonic()
+        response = client.messages.create(**kwargs)
+        duration_ms = int((time.monotonic() - start) * 1000)
+
+        content_text = "".join(
+            block.text for block in response.content if block.type == "text"
+        )
+        if not content_text.strip():
+            raise LLMError("Anthropic returned empty content")
+
+        parsed = None
+        if json_mode:
+            parsed = extract_json(content_text)
+            if not parsed:
+                raise LLMError("Could not extract JSON from response")
+
+        usage = response.usage
+        cache_read = getattr(usage, "cache_read_input_tokens", 0) or 0
+        cache_create = getattr(usage, "cache_creation_input_tokens", 0) or 0
+        self.cache_read_tokens_total += cache_read
+        self.cache_creation_tokens_total += cache_create
+
+        return LLMResponse(
+            content=content_text,
+            parsed=parsed,
+            model=response.model,
+            prompt_tokens=usage.input_tokens + cache_read + cache_create,
+            completion_tokens=usage.output_tokens,
+            duration_ms=duration_ms,
+        )
+
+    def chat_with_tools(
+        self,
+        messages: list[dict],
+        tools: list[dict],
+        max_iterations: int = 8,
+        timeout: int = 120,
+        on_tool_call: Optional[object] = None,
+    ) -> ToolCallingResponse:
+        """Agentic tool-calling loop using Anthropic's tool_use blocks."""
+        client = self._get_client()
+        loop_start = time.monotonic()
+
+        system_text, anth_msgs = self._split_messages(messages)
+        system = self._build_system_param(
+            system_text, self.config.anthropic_cache
+        )
+        anth_tools = self._convert_tools(tools, self.config.anthropic_cache)
+
+        all_tool_results: list[ToolCallResult] = []
+        total_prompt_tok = 0
+        total_completion_tok = 0
+        iteration = 0
+        msgs = list(anth_msgs)
+        final_content = ""
+
+        for iteration in range(1, max_iterations + 1):
+            elapsed = time.monotonic() - loop_start
+            if elapsed >= timeout:
+                logger.warning(
+                    "chat_with_tools: timeout after %.1fs (%d iterations)",
+                    elapsed, iteration - 1,
+                )
+                return ToolCallingResponse(
+                    tool_results=all_tool_results,
+                    stop_reason="timeout",
+                    iterations=iteration - 1,
+                    total_prompt_tokens=total_prompt_tok,
+                    total_completion_tokens=total_completion_tok,
+                    duration_ms=int(elapsed * 1000),
+                )
+
+            kwargs: dict = {
+                "model": self.config.model,
+                "max_tokens": min(self.config.anthropic_max_tokens, 4096),
+                "messages": msgs,
+                "tools": anth_tools,
+                "temperature": self.config.temperature,
+            }
+            if system is not None:
+                kwargs["system"] = system
+
+            try:
+                response = client.messages.create(**kwargs)
+            except Exception as e:
+                logger.error(
+                    "chat_with_tools: request failed iter=%d: %s",
+                    iteration, e,
+                )
+                return ToolCallingResponse(
+                    tool_results=all_tool_results,
+                    stop_reason="error",
+                    iterations=iteration,
+                    total_prompt_tokens=total_prompt_tok,
+                    total_completion_tokens=total_completion_tok,
+                    duration_ms=int((time.monotonic() - loop_start) * 1000),
+                )
+
+            usage = response.usage
+            cache_read = getattr(usage, "cache_read_input_tokens", 0) or 0
+            cache_create = getattr(usage, "cache_creation_input_tokens", 0) or 0
+            iter_prompt = usage.input_tokens + cache_read + cache_create
+            iter_completion = usage.output_tokens
+            total_prompt_tok += iter_prompt
+            total_completion_tok += iter_completion
+            self.prompt_tokens_total += iter_prompt
+            self.completion_tokens_total += iter_completion
+            self.cache_read_tokens_total += cache_read
+            self.cache_creation_tokens_total += cache_create
+
+            # Reassemble the assistant message with its original content blocks.
+            # Anthropic requires echoing tool_use blocks back verbatim.
+            assistant_content = []
+            text_parts = []
+            tool_uses = []
+            for block in response.content:
+                if block.type == "text":
+                    text_parts.append(block.text)
+                    assistant_content.append(
+                        {"type": "text", "text": block.text}
+                    )
+                elif block.type == "tool_use":
+                    tool_uses.append(block)
+                    assistant_content.append({
+                        "type": "tool_use",
+                        "id": block.id,
+                        "name": block.name,
+                        "input": block.input,
+                    })
+
+            if response.stop_reason == "end_turn" or not tool_uses:
+                duration_ms = int((time.monotonic() - loop_start) * 1000)
+                final_content = "".join(text_parts)
+                logger.info(
+                    "chat_with_tools: done after %d iterations (%dms), "
+                    "%d tool calls total  prompt_tok=%d  completion_tok=%d  "
+                    "cache_read=%d",
+                    iteration, duration_ms, len(all_tool_results),
+                    total_prompt_tok, total_completion_tok, cache_read,
+                )
+                return ToolCallingResponse(
+                    tool_results=all_tool_results,
+                    final_content=final_content,
+                    stop_reason="done",
+                    iterations=iteration,
+                    total_prompt_tokens=total_prompt_tok,
+                    total_completion_tokens=total_completion_tok,
+                    duration_ms=duration_ms,
+                )
+
+            msgs.append({"role": "assistant", "content": assistant_content})
+
+            tool_result_blocks = []
+            for tu in tool_uses:
+                name = tu.name
+                args = tu.input or {}
+                is_error = False
+                try:
+                    if on_tool_call:
+                        result_str = on_tool_call(name, args)
+                    else:
+                        result_str = json.dumps(
+                            {"error": "no handler registered"}
+                        )
+                        is_error = True
+                except Exception as e:
+                    result_str = json.dumps({"error": str(e)})
+                    is_error = True
+                    logger.warning(
+                        "chat_with_tools: tool %s raised: %s", name, e,
+                    )
+
+                all_tool_results.append(ToolCallResult(
+                    tool_name=name,
+                    tool_args=args,
+                    result=result_str,
+                    error=is_error,
+                ))
+
+                block = {
+                    "type": "tool_result",
+                    "tool_use_id": tu.id,
+                    "content": result_str,
+                }
+                if is_error:
+                    block["is_error"] = True
+                tool_result_blocks.append(block)
+
+                logger.debug(
+                    "chat_with_tools: iter=%d tool=%s args=%s error=%s",
+                    iteration, name, args, is_error,
+                )
+
+            msgs.append({"role": "user", "content": tool_result_blocks})
+
+        duration_ms = int((time.monotonic() - loop_start) * 1000)
+        logger.warning(
+            "chat_with_tools: max_iterations=%d reached (%dms)  "
+            "prompt_tok=%d  completion_tok=%d",
+            max_iterations, duration_ms,
+            total_prompt_tok, total_completion_tok,
+        )
+        return ToolCallingResponse(
+            tool_results=all_tool_results,
+            stop_reason="max_iterations",
+            iterations=max_iterations,
+            total_prompt_tokens=total_prompt_tok,
+            total_completion_tokens=total_completion_tok,
+            duration_ms=duration_ms,
+        )
+
+    def is_available(self) -> bool:
+        """True if the SDK is importable and the API key is set."""
+        try:
+            self._get_client()
+            return True
+        except LLMError:
             return False
 
 
