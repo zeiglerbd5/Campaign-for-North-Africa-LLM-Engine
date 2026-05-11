@@ -21,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 ANTHROPIC_DEFAULT_MODEL = "claude-sonnet-4-6"
 
+# Bedrock default uses a US cross-region inference profile. Adjust for your
+# region / account. Verify model access is enabled in the Bedrock console.
+BEDROCK_DEFAULT_MODEL = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+BEDROCK_DEFAULT_REGION = "us-east-1"
+
 
 def extract_json(text: str) -> dict:
     """
@@ -1100,6 +1105,437 @@ class AnthropicClient:
 
     def is_available(self) -> bool:
         """True if the SDK is importable and the API key is set."""
+        try:
+            self._get_client()
+            return True
+        except LLMError:
+            return False
+
+
+class BedrockClient:
+    """
+    Client for AWS Bedrock via the Converse API.
+
+    Uses boto3 with IAM credentials from the standard chain (env vars,
+    ~/.aws/credentials, or the Fargate task role at runtime). Same shape
+    as AnthropicClient — implements chat() and chat_with_tools() — but
+    routes through bedrock-runtime.converse().
+
+    Caching: insert cachePoint blocks after system text and after the
+    tools list. Requires model access to be enabled for the configured
+    modelId in the AWS Bedrock console.
+    """
+
+    def __init__(self, config: OrchestratorConfig):
+        self.config = config
+        self.prompt_tokens_total = 0
+        self.completion_tokens_total = 0
+        self.cache_read_tokens_total = 0
+        self.cache_creation_tokens_total = 0
+        self._client = None
+
+    def _get_client(self):
+        if self._client is not None:
+            return self._client
+        try:
+            import boto3
+        except ImportError as e:
+            raise LLMError(
+                "boto3 not installed. Run: pip install boto3"
+            ) from e
+        try:
+            self._client = boto3.client(
+                "bedrock-runtime",
+                region_name=self.config.bedrock_region,
+            )
+        except Exception as e:
+            raise LLMError(f"Failed to create bedrock-runtime client: {e}") from e
+        return self._client
+
+    @staticmethod
+    def _split_messages(messages: list[dict]) -> tuple[str, list[dict]]:
+        """Pull the system message out and convert the rest to Converse format."""
+        system_text = ""
+        out = []
+        for m in messages:
+            role = m.get("role")
+            content = m.get("content", "")
+            if role == "system":
+                system_text = (system_text + "\n" + content).strip()
+            elif role in ("user", "assistant"):
+                # Converse content is a list of blocks.
+                out.append({
+                    "role": role,
+                    "content": [{"text": content}] if isinstance(content, str) else content,
+                })
+        return system_text, out
+
+    @staticmethod
+    def _build_system_blocks(system_text: str, cache: bool) -> list[dict]:
+        if not system_text:
+            return []
+        blocks = [{"text": system_text}]
+        if cache:
+            blocks.append({"cachePoint": {"type": "default"}})
+        return blocks
+
+    @staticmethod
+    def _convert_tools(tools: list[dict], cache: bool) -> Optional[dict]:
+        """OpenAI function-calling format → Bedrock Converse toolConfig."""
+        if not tools:
+            return None
+        specs = []
+        for t in tools:
+            if t.get("type") == "function" and "function" in t:
+                f = t["function"]
+                specs.append({
+                    "toolSpec": {
+                        "name": f["name"],
+                        "description": f.get("description", ""),
+                        "inputSchema": {
+                            "json": f.get(
+                                "parameters",
+                                {"type": "object", "properties": {}},
+                            ),
+                        },
+                    },
+                })
+        tool_list: list = list(specs)
+        if tool_list and cache:
+            tool_list.append({"cachePoint": {"type": "default"}})
+        return {"tools": tool_list}
+
+    @staticmethod
+    def _build_additional_fields(think) -> Optional[dict]:
+        """Map the engine's think param to Bedrock's additionalModelRequestFields."""
+        if think is None or think is False:
+            return None
+        if isinstance(think, str) and think.startswith("budget_tokens:"):
+            try:
+                budget = int(think.split(":", 1)[1])
+                return {
+                    "thinking": {
+                        "type": "enabled",
+                        "budget_tokens": max(budget, 1024),
+                    },
+                }
+            except (ValueError, IndexError):
+                return None
+        if think is True:
+            return {"thinking": {"type": "enabled", "budget_tokens": 2048}}
+        return None
+
+    def _accumulate_usage(self, usage: dict) -> tuple[int, int, int, int]:
+        in_tok = usage.get("inputTokens", 0) or 0
+        out_tok = usage.get("outputTokens", 0) or 0
+        cache_read = usage.get("cacheReadInputTokens", 0) or 0
+        cache_create = usage.get("cacheWriteInputTokens", 0) or 0
+        self.prompt_tokens_total += in_tok + cache_read + cache_create
+        self.completion_tokens_total += out_tok
+        self.cache_read_tokens_total += cache_read
+        self.cache_creation_tokens_total += cache_create
+        return in_tok, out_tok, cache_read, cache_create
+
+    def chat(
+        self,
+        messages: list[dict],
+        json_mode: bool = True,
+        think: Optional[object] = None,
+    ) -> LLMResponse:
+        """Single-shot Converse API call with retries."""
+        last_error = None
+        call_start = time.monotonic()
+
+        caller_hint = ""
+        for msg in messages:
+            if msg.get("role") == "system":
+                caller_hint = msg.get("content", "")[:120].replace("\n", " ")
+                break
+
+        for attempt in range(1, self.config.max_retries + 1):
+            try:
+                result = self._call_single(messages, json_mode, think)
+                logger.info(
+                    "LLM OK  model=%s  attempt=%d  duration=%dms  "
+                    "prompt_tok=%d  completion_tok=%d  caller=[%s]",
+                    result.model, attempt, result.duration_ms,
+                    result.prompt_tokens, result.completion_tokens,
+                    caller_hint[:80],
+                )
+                return result
+            except (json.JSONDecodeError, LLMError) as e:
+                last_error = e
+                elapsed_ms = int((time.monotonic() - call_start) * 1000)
+                logger.warning(
+                    "LLM FAIL  attempt=%d/%d  elapsed=%dms  error=%s  caller=[%s]",
+                    attempt, self.config.max_retries, elapsed_ms, e,
+                    caller_hint[:80],
+                )
+                if isinstance(e, LLMError) and "empty content" in str(e).lower():
+                    break
+                if attempt < self.config.max_retries:
+                    is_json_fail = (
+                        isinstance(e, json.JSONDecodeError)
+                        or (isinstance(e, LLMError) and "json" in str(e).lower())
+                    )
+                    if is_json_fail and json_mode:
+                        messages = messages + [{
+                            "role": "user",
+                            "content": "Your previous response was not valid JSON. "
+                                       "Please respond with valid JSON only.",
+                        }]
+            except Exception as e:
+                last_error = e
+                elapsed_ms = int((time.monotonic() - call_start) * 1000)
+                logger.warning(
+                    "LLM FAIL  attempt=%d/%d  elapsed=%dms  error=%s  caller=[%s]",
+                    attempt, self.config.max_retries, elapsed_ms, e,
+                    caller_hint[:80],
+                )
+
+        total_ms = int((time.monotonic() - call_start) * 1000)
+        raise LLMError(
+            f"Bedrock call failed after {self.config.max_retries} attempts "
+            f"({total_ms}ms total): {last_error}"
+        )
+
+    def _call_single(
+        self,
+        messages: list[dict],
+        json_mode: bool,
+        think: Optional[object],
+    ) -> LLMResponse:
+        client = self._get_client()
+        system_text, msgs = self._split_messages(messages)
+        system_blocks = self._build_system_blocks(
+            system_text, self.config.anthropic_cache
+        )
+        additional = self._build_additional_fields(think)
+
+        kwargs: dict = {
+            "modelId": self.config.model,
+            "messages": msgs,
+            "inferenceConfig": {
+                "maxTokens": self.config.anthropic_max_tokens,
+                "temperature": self.config.temperature,
+            },
+        }
+        if system_blocks:
+            kwargs["system"] = system_blocks
+        if additional is not None:
+            kwargs["additionalModelRequestFields"] = additional
+            # Extended thinking requires temperature=1.
+            kwargs["inferenceConfig"]["temperature"] = 1.0
+            min_max = additional["thinking"]["budget_tokens"] + 1024
+            if kwargs["inferenceConfig"]["maxTokens"] < min_max:
+                kwargs["inferenceConfig"]["maxTokens"] = min_max
+
+        start = time.monotonic()
+        response = client.converse(**kwargs)
+        duration_ms = int((time.monotonic() - start) * 1000)
+
+        msg = response.get("output", {}).get("message", {})
+        content_text = "".join(
+            b["text"] for b in msg.get("content", []) if "text" in b
+        )
+        if not content_text.strip():
+            raise LLMError("Bedrock returned empty content")
+
+        parsed = None
+        if json_mode:
+            parsed = extract_json(content_text)
+            if not parsed:
+                raise LLMError("Could not extract JSON from response")
+
+        usage = response.get("usage", {})
+        in_tok, out_tok, cache_read, cache_create = self._accumulate_usage(usage)
+
+        return LLMResponse(
+            content=content_text,
+            parsed=parsed,
+            model=self.config.model,
+            prompt_tokens=in_tok + cache_read + cache_create,
+            completion_tokens=out_tok,
+            duration_ms=duration_ms,
+        )
+
+    def chat_with_tools(
+        self,
+        messages: list[dict],
+        tools: list[dict],
+        max_iterations: int = 8,
+        timeout: int = 120,
+        on_tool_call: Optional[object] = None,
+    ) -> ToolCallingResponse:
+        """Agentic tool-calling loop using Bedrock Converse toolUse blocks."""
+        client = self._get_client()
+        loop_start = time.monotonic()
+
+        system_text, bedrock_msgs = self._split_messages(messages)
+        system_blocks = self._build_system_blocks(
+            system_text, self.config.anthropic_cache
+        )
+        tool_config = self._convert_tools(tools, self.config.anthropic_cache)
+
+        all_tool_results: list[ToolCallResult] = []
+        total_prompt_tok = 0
+        total_completion_tok = 0
+        iteration = 0
+        msgs = list(bedrock_msgs)
+        final_content = ""
+
+        for iteration in range(1, max_iterations + 1):
+            elapsed = time.monotonic() - loop_start
+            if elapsed >= timeout:
+                logger.warning(
+                    "chat_with_tools: timeout after %.1fs (%d iterations)",
+                    elapsed, iteration - 1,
+                )
+                return ToolCallingResponse(
+                    tool_results=all_tool_results,
+                    stop_reason="timeout",
+                    iterations=iteration - 1,
+                    total_prompt_tokens=total_prompt_tok,
+                    total_completion_tokens=total_completion_tok,
+                    duration_ms=int(elapsed * 1000),
+                )
+
+            kwargs: dict = {
+                "modelId": self.config.model,
+                "messages": msgs,
+                "inferenceConfig": {
+                    "maxTokens": min(self.config.anthropic_max_tokens, 4096),
+                    "temperature": self.config.temperature,
+                },
+            }
+            if system_blocks:
+                kwargs["system"] = system_blocks
+            if tool_config:
+                kwargs["toolConfig"] = tool_config
+
+            try:
+                response = client.converse(**kwargs)
+            except Exception as e:
+                logger.error(
+                    "chat_with_tools: request failed iter=%d: %s",
+                    iteration, e,
+                )
+                return ToolCallingResponse(
+                    tool_results=all_tool_results,
+                    stop_reason="error",
+                    iterations=iteration,
+                    total_prompt_tokens=total_prompt_tok,
+                    total_completion_tokens=total_completion_tok,
+                    duration_ms=int((time.monotonic() - loop_start) * 1000),
+                )
+
+            usage = response.get("usage", {})
+            in_tok, out_tok, cache_read, _ = self._accumulate_usage(usage)
+            iter_prompt = in_tok + cache_read + (usage.get("cacheWriteInputTokens", 0) or 0)
+            iter_completion = out_tok
+            total_prompt_tok += iter_prompt
+            total_completion_tok += iter_completion
+
+            msg = response.get("output", {}).get("message", {})
+            stop_reason = response.get("stopReason")
+
+            # Reassemble the assistant message — echo content blocks verbatim.
+            assistant_content = []
+            text_parts = []
+            tool_uses = []
+            for block in msg.get("content", []):
+                if "text" in block:
+                    text_parts.append(block["text"])
+                    assistant_content.append({"text": block["text"]})
+                elif "toolUse" in block:
+                    tu = block["toolUse"]
+                    tool_uses.append(tu)
+                    assistant_content.append({"toolUse": tu})
+
+            if stop_reason == "end_turn" or not tool_uses:
+                duration_ms = int((time.monotonic() - loop_start) * 1000)
+                final_content = "".join(text_parts)
+                logger.info(
+                    "chat_with_tools: done after %d iterations (%dms), "
+                    "%d tool calls total  prompt_tok=%d  completion_tok=%d  "
+                    "cache_read=%d",
+                    iteration, duration_ms, len(all_tool_results),
+                    total_prompt_tok, total_completion_tok, cache_read,
+                )
+                return ToolCallingResponse(
+                    tool_results=all_tool_results,
+                    final_content=final_content,
+                    stop_reason="done",
+                    iterations=iteration,
+                    total_prompt_tokens=total_prompt_tok,
+                    total_completion_tokens=total_completion_tok,
+                    duration_ms=duration_ms,
+                )
+
+            msgs.append({"role": "assistant", "content": assistant_content})
+
+            tool_result_blocks = []
+            for tu in tool_uses:
+                name = tu.get("name", "")
+                tool_use_id = tu.get("toolUseId", "")
+                args = tu.get("input", {}) or {}
+                is_error = False
+                try:
+                    if on_tool_call:
+                        result_str = on_tool_call(name, args)
+                    else:
+                        result_str = json.dumps(
+                            {"error": "no handler registered"}
+                        )
+                        is_error = True
+                except Exception as e:
+                    result_str = json.dumps({"error": str(e)})
+                    is_error = True
+                    logger.warning(
+                        "chat_with_tools: tool %s raised: %s", name, e,
+                    )
+
+                all_tool_results.append(ToolCallResult(
+                    tool_name=name,
+                    tool_args=args,
+                    result=result_str,
+                    error=is_error,
+                ))
+
+                tr_block = {
+                    "toolResult": {
+                        "toolUseId": tool_use_id,
+                        "content": [{"text": result_str}],
+                        "status": "error" if is_error else "success",
+                    },
+                }
+                tool_result_blocks.append(tr_block)
+
+                logger.debug(
+                    "chat_with_tools: iter=%d tool=%s args=%s error=%s",
+                    iteration, name, args, is_error,
+                )
+
+            msgs.append({"role": "user", "content": tool_result_blocks})
+
+        duration_ms = int((time.monotonic() - loop_start) * 1000)
+        logger.warning(
+            "chat_with_tools: max_iterations=%d reached (%dms)  "
+            "prompt_tok=%d  completion_tok=%d",
+            max_iterations, duration_ms,
+            total_prompt_tok, total_completion_tok,
+        )
+        return ToolCallingResponse(
+            tool_results=all_tool_results,
+            stop_reason="max_iterations",
+            iterations=max_iterations,
+            total_prompt_tokens=total_prompt_tok,
+            total_completion_tokens=total_completion_tok,
+            duration_ms=duration_ms,
+        )
+
+    def is_available(self) -> bool:
+        """True if boto3 imports and a bedrock-runtime client can be created."""
         try:
             self._get_client()
             return True

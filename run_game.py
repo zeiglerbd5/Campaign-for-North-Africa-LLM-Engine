@@ -29,7 +29,7 @@ from cna_engine.models.serialization import load_state
 from cna_engine.orchestrator.config import OrchestratorConfig
 from cna_engine.orchestrator.orchestrator import GameOrchestrator
 from cna_engine.orchestrator.llm_backend import (
-    OllamaClient, MLXClient, AnthropicClient,
+    OllamaClient, MLXClient, AnthropicClient, BedrockClient,
 )
 from cna_engine.orchestrator.mock_strategies import SmartMockLLMClient
 from cna_engine.orchestrator.memory import TurnMemory
@@ -166,12 +166,15 @@ def setup_game(args):
         (orchestrator, reinforcements)
     """
     tool_calling = getattr(args, "tool_calling", False)
-    config = OrchestratorConfig(
+    config_kwargs = dict(
         model=args.model,
         temperature=args.temperature,
         backend=args.backend,
         tool_calling=tool_calling,
     )
+    if getattr(args, "bedrock_region", None):
+        config_kwargs["bedrock_region"] = args.bedrock_region
+    config = OrchestratorConfig(**config_kwargs)
 
     # Load or resume game state
     if args.load:
@@ -203,6 +206,14 @@ def setup_game(args):
         else:
             print("  Anthropic backend unavailable (missing ANTHROPIC_API_KEY "
                   "or anthropic SDK not installed)")
+    elif args.backend == "bedrock":
+        bedrock = BedrockClient(config)
+        if bedrock.is_available():
+            print(f"  LLM: Bedrock ({config.model}, region={config.bedrock_region})")
+            llm_client = bedrock
+        else:
+            print("  Bedrock backend unavailable (boto3 not installed or "
+                  "AWS credentials missing)")
     elif args.backend in ("auto", "mlx"):
         mlx = MLXClient(config)
         if mlx.is_available():
@@ -334,8 +345,13 @@ def parse_args():
     )
     parser.add_argument(
         "--backend", type=str, default="auto",
-        choices=["auto", "ollama", "mlx", "anthropic"],
-        help="LLM backend: auto (try mlx then ollama), ollama, mlx, or anthropic",
+        choices=["auto", "ollama", "mlx", "anthropic", "bedrock"],
+        help="LLM backend: auto (try mlx then ollama), ollama, mlx, "
+             "anthropic, or bedrock",
+    )
+    parser.add_argument(
+        "--bedrock-region", type=str, default=None,
+        help="AWS region for Bedrock (default: us-east-1)",
     )
     parser.add_argument(
         "--mock", action="store_true",
@@ -394,6 +410,9 @@ def main():
         elif args.backend == "anthropic":
             from cna_engine.orchestrator.llm_backend import ANTHROPIC_DEFAULT_MODEL
             args.model = ANTHROPIC_DEFAULT_MODEL
+        elif args.backend == "bedrock":
+            from cna_engine.orchestrator.llm_backend import BEDROCK_DEFAULT_MODEL
+            args.model = BEDROCK_DEFAULT_MODEL
         else:
             from cna_engine.orchestrator.config import MLX_DEFAULT_MODEL
             args.model = MLX_DEFAULT_MODEL

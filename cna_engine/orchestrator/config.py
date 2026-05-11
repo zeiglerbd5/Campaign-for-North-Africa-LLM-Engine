@@ -28,13 +28,16 @@ class OrchestratorConfig:
     )
 
     # Backend selection
-    backend: str = "ollama"              # "ollama", "mlx", or "anthropic"
+    backend: str = "ollama"              # "ollama", "mlx", "anthropic", or "bedrock"
     mlx_url: str = "http://localhost:8080"
     mlx_max_tokens: int = 6144           # mlx_lm defaults to 512; gpt-oss needs room for analysis+final channels
 
-    # Anthropic backend settings
+    # Anthropic backend settings (also used by Bedrock for max_tokens + cache toggle)
     anthropic_max_tokens: int = 4096
     anthropic_cache: bool = True         # cache system prompt + tools (~80% input cost reduction)
+
+    # Bedrock backend settings
+    bedrock_region: str = "us-east-1"
 
     # Situation-action engine (two-stage pipeline) — ALWAYS ON.
     # The expert+general pipeline (general.py/experts.py) is deprecated.

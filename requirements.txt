@@ -11,3 +11,6 @@ sentence-transformers>=2.7
 
 # Anthropic backend (cloud inference via Claude; optional)
 # pip install anthropic
+
+# Bedrock backend (AWS-hosted Claude via boto3; optional)
+# pip install boto3
