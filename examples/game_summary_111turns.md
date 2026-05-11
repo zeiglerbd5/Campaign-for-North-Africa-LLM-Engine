@@ -10,7 +10,7 @@
 
 ## Overview
 
-Two instances of Qwen3-8B played both the Western Desert Force (Allied) and the Regio Esercito/DAK (Axis) across all 111 game turns of the Operation Compass scenario. The game ran overnight as a fully autonomous session -- no human intervention at any point. The Allied AI executed a historically plausible campaign: an initial fighting retreat from the Axis opening assault around Sidi Barrani, a counter-offensive that pushed the Italians west, a prolonged attritional stalemate in the desert interior driven by the water crisis, and a late-game Allied breakout that reached Tobruk by game's end. The Axis AI received DAK reinforcements around GT15-21 and launched periodic counter-attacks but could never sustain an advance due to critical supply shortages. Water dominated every decision from GT20 onward.
+Qwen3-8B played both the Western Desert Force (Allied) and the Regio Esercito/DAK (Axis) across all 111 game turns of the Operation Compass scenario. The game ran overnight as a fully autonomous session -- no human intervention at any point. The Allied AI executed a historically plausible campaign: an initial fighting retreat from the Axis opening assault around Sidi Barrani, a counter-offensive that pushed the Italians west, a prolonged attritional stalemate in the desert interior driven by the water crisis, and a late-game Allied breakout that reached Tobruk by game's end. The Axis AI received DAK reinforcements around GT15-21 and launched periodic counter-attacks but could never sustain an advance due to critical supply shortages. Water dominated every decision from GT20 onward.
 
 ---
 

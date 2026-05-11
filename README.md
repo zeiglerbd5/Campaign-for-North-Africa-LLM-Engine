@@ -1,14 +1,33 @@
 # Campaign for North Africa — LLM Game Engine
 
-## What This Is
+One of the first things that really made people take notice of AI was AlphaGo. DeepMind built a system that taught itself by playing itself millions of times — and Go, like chess, had centuries of recorded play and notation behind it. Neither is available for *The Campaign for North Africa*. **No completed game of CNA has ever been publicly documented** — most groups who attempt it spend years and only finish a handful of turns. The position space is also large enough that AlphaGo-style self-play training would need compute well past what a workstation can deliver. That combination — a massive, well-structured rule system with almost no human exploration — makes CNA an unusually interesting AI sandbox.
 
-This is a rules engine and multi-agent AI system for *The Campaign for North Africa* (SPI, 1979), designed to be played entirely by LLM agents.
+This project builds both the play surface and the agents that act in it:
 
-*Campaign for North Africa* (CNA) is the most complex board wargame ever published. It simulates the North African theater from September 1940 through January 1943 at a scale of 8km per hex and one week per turn. It ships with a 10-foot map, ~1,600 counters, a 322-page rulebook, and 131 charts and tables. The designer recommended 10 players and estimated 1,500 hours to complete a full campaign. No verified complete game has ever been recorded.
+- a **deterministic rules engine** covering the 1979 SPI rules plus errata and the NJHarman community rewrite
+- a **RAG pipeline** retrieving relevant rules and accumulated cross-game doctrine on demand
+- an **entourage architecture** with domain experts (ground, logistics, air, naval) coordinated by a general agent
+- a leaner **situation-classification pipeline** that replaces the entourage in the default loop when one LLM call per phase is enough
+- **tool-calling** support for agents to query the world before issuing orders
 
-The goal of this project is to build the game as a functioning digital system, then have teams of LLM agents play it — each agent taking one of the five staff roles the rules define — and eventually have them learn through self-play.
+Qwen3-8B plays both sides through a full 111-turn Operation Compass scenario autonomously — overnight, on a single 24 GB laptop. The annotated turn-by-turn record in [`examples/game_summary_111turns.md`](examples/game_summary_111turns.md) is, as far as I know, **the first publicly documented CNA game played start-to-finish.**
 
-**Current status:** The engine has completed a full 111-turn Operation Compass game autonomously — both sides played entirely by Qwen3-8B running locally on an M4 Pro MacBook (24GB). A complete game takes 6–8 hours and runs unattended overnight. The orchestrator uses a two-stage situation engine (signal extraction → classification → playbook execution) with a RAG pipeline backed by ChromaDB, a cross-game doctrine system, and thinking budget scaling per situation complexity. The full 6,565-hex map covers all five map sections (A through E) with real terrain data extracted from the VASSAL module.
+**Per-phase decision loop:**
+
+```mermaid
+flowchart TB
+    State[Game State] --> Sig[extract_signals<br/><i>force ratios · supply · VP · contacts</i>]
+    Sig --> Class[classify_situation<br/><i>deterministic → 1 of 12 labels</i>]
+    Class --> Query[build_situation_query]
+    Query --> RAG[(ChromaDB index<br/>rules · doctrine · playbook)]
+    RAG --> Prompt[Compose prompt:<br/>situation + state + RAG context]
+    Class --> Prompt
+    Prompt --> LLM[execute_playbook<br/><b>LLM call</b>]
+    LLM --> Validate[validate_orders<br/><i>against rules engine</i>]
+    Validate --> Exec[Execute valid orders<br/>on game state]
+    Exec --> Log[Log to JSONL]
+    Exec --> State
+```
 
 ## Why This Game
 
@@ -140,6 +159,23 @@ GAME TURN
 
 The Movement & Combat phase is internally repeatable — the active player can cycle through movement, breakdown, and combat segments as many times as desired within their CPA limits.
 
+The orchestrator drives the SoP one phase at a time, calling the LLM only for interactive phases that have meaningful choices to make:
+
+```mermaid
+flowchart TB
+    A[run_until_pause] --> B{Phase type?}
+    B -->|auto<br/>e.g. weather, stores| C[Auto-resolve<br/>no LLM]
+    B -->|interactive<br/>e.g. movement, combat| D[Decision loop<br/>see top of README]
+    B -->|trivial<br/>no possible actions| skip[Skip<br/>no LLM]
+    C --> E[advance]
+    D --> E
+    skip --> E
+    E --> F{Turn done?}
+    F -->|no| A
+    F -->|yes| G[Doctrine extraction<br/>+ save + log]
+    G --> H[Next turn]
+```
+
 ### Combat Resolution
 
 Three combat systems are implemented, each with its own CRT:
@@ -198,6 +234,22 @@ Per Side, Per Phase:
 ### RAG Pipeline
 
 The orchestrator includes a semantic retrieval system (`rag.py`) that provides situationally relevant context to agents instead of dumping flat lesson lists.
+
+```mermaid
+flowchart LR
+    subgraph corpus["Indexed corpus (~1100 docs)"]
+        R[CNA Rules<br/>149 chunks]
+        D[Cross-game doctrine<br/>~948 lessons]
+        P[Strategic playbook<br/>15 entries]
+    end
+    R --> idx[(ChromaDB +<br/>all-MiniLM-L6-v2)]
+    D --> idx
+    P --> idx
+    sig[Phase signals] --> q[build_situation_query]
+    q --> idx
+    idx --> ctx[Top-5 chunks<br/>~2000 char budget]
+    ctx --> prompt[Injected into<br/>LLM prompt]
+```
 
 **Knowledge sources:**
 - **CNA Rules** (~1,900 lines across 2 files) — chunked by section headers into ~500-token chunks
