@@ -19,12 +19,18 @@ when the task exits.
 
 ## Prerequisites
 
-- AWS account with permissions for ECR, ECS, S3, IAM, CloudWatch, Bedrock
+- AWS account with permissions for ECR, ECS, S3, IAM, CloudWatch, Bedrock,
+  and EC2 read (the default VPC/subnet lookups in `outputs.tf` need
+  `ec2:DescribeVpc*` and `ec2:DescribeSubnets`). The managed
+  `AmazonEC2ReadOnlyAccess` policy covers this if your user doesn't
+  already have it.
 - AWS CLI v2 configured (`aws sts get-caller-identity` should succeed)
 - Bedrock model access enabled for Anthropic Claude (one-time per account
-  via the Bedrock console — fill out the "use case details" form)
+  via the Bedrock console — fill out the "use case details" form for the
+  Claude model row)
 - Terraform >= 1.5
-- Docker with buildx (for cross-platform builds)
+- Docker with buildx (for cross-platform builds; needed because Fargate
+  runs amd64 and Apple Silicon laptops are arm64)
 - Region: `us-east-1` by default
 
 ## One-time setup
