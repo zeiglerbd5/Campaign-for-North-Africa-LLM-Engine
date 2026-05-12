@@ -434,6 +434,32 @@ The `examples/` directory contains output from a complete 111-turn Operation Com
 - **`game_summary_111turns.md`** — Turn-by-turn narrative summary showing how the AI played
 - **`game_report_111turns.xlsx`** — Styled spreadsheet with unit status, orders, turn summaries, and aircraft data (modeled after CNA's original paper log sheets)
 
+## Deploying to AWS
+
+The engine can run in a Fargate container against AWS Bedrock instead of
+a local model. The same code that runs against MLX or Ollama runs
+unchanged in the cloud — only the `--backend` flag changes.
+
+```
+Fargate Task (Docker) ──► Bedrock (Claude Sonnet)
+                       ─► S3 (saves, logs)
+                       ─► CloudWatch (stdout)
+```
+
+Two cloud backends are wired in `cna_engine/orchestrator/llm_backend.py`:
+
+- `AnthropicClient` — direct Anthropic API, used with `--backend anthropic`
+- `BedrockClient` — AWS-native via the Converse API, used with `--backend bedrock`
+
+Both support prompt caching on the system prompt and tool definitions,
+and extended thinking via `budget_tokens`. Auth is by `ANTHROPIC_API_KEY`
+env var for Anthropic, and the standard AWS credential chain (IAM task
+role at runtime) for Bedrock.
+
+Container, Terraform, and step-by-step deployment instructions are in
+[`deploy/aws/README.md`](deploy/aws/README.md). Cost runs about
+$1 per 4-turn game, with no idle cost.
+
 ## What's Next
 
 1. **Full coast road mapping** — Only named cities currently have `RoadType.ROAD`. Mapping the complete coast road hex-by-hex would improve movement pathfinding realism.

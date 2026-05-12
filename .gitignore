@@ -40,3 +40,11 @@ pythonfiles/
 
 # Large generated files
 *.vlog
+
+# Terraform working directory (provider binaries, state, plans).
+# Lock file (.terraform.lock.hcl) IS committed by convention to pin
+# provider versions across environments.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan

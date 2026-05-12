@@ -1,0 +1,39 @@
+# VCS / IDE / Python
+.git/
+.gitignore
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Runtime outputs (not needed at image build)
+saves/
+logs/
+output/
+exports/
+
+# Dev artifacts
+combat and test/
+pythonfiles/
+
+# Copyrighted material
+*.pdf
+*.docx
+*.rtf
+*.vlog
+VASSAL_CNA/
+CNA_encryption/
+files/vassal_module/
+
+# macOS
+.DS_Store
+
+# Examples (large XLSX + markdown, not needed at runtime)
+examples/
+
+# Deploy's own terraform — only the container artifacts are needed
+deploy/aws/terraform/
+deploy/aws/README.md

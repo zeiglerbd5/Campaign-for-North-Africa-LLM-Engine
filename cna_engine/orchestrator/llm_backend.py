@@ -23,7 +23,7 @@ ANTHROPIC_DEFAULT_MODEL = "claude-sonnet-4-6"
 
 # Bedrock default uses a US cross-region inference profile. Adjust for your
 # region / account. Verify model access is enabled in the Bedrock console.
-BEDROCK_DEFAULT_MODEL = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+BEDROCK_DEFAULT_MODEL = "us.anthropic.claude-sonnet-4-6"
 BEDROCK_DEFAULT_REGION = "us-east-1"
 
 
